@@ -2,6 +2,7 @@
 ** Data science 					      :data:mustread:
 *** R
 **** https://feeds.feedburner.com/RBloggers
+**** https://rweekly.org/atom.xml
 *** Julia
 **** http://www.juliabloggers.com/feed/
 *** Python (Pydata)
