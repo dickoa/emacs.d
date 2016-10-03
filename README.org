@@ -1,0 +1,2 @@
+#+TITLE: My personal emacs configuration based on org-mode
+
