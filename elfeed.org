@@ -1,0 +1,16 @@
+* Blogs                                                              :elfeed:
+** Data science 					      :data:mustread:
+*** R
+**** https://feeds.feedburner.com/RBloggers
+*** Julia
+**** http://www.juliabloggers.com/feed/
+*** Python (Pydata)
+*** Others  
+**** http://www.johnmyleswhite.com/feed/
+**** http://jakevdp.github.io/atom.xml
+** Software Development 						:dev:
+*** Emacs                                                    :emacs:mustread:
+**** http://www.terminally-incoherent.com/blog/feed
+**** http://nullprogram.com/feed
+**** entry-title: \(emacs\|org-mode\)
+**** http://planet.emacsen.org/atom.xml

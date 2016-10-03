@@ -1,0 +1,443 @@
+#+TITLE: Emacs Configuration
+#+AUTHOR: Ahmadou H. Dicko
+#+EMAIL: dicko.ahmadou@gmail.com
+
+* Personal info and package source
+** Personal information
+
+   #+BEGIN_SRC emacs-lisp :tangle yes
+(setq user-full-name "Ahmadou H. Dicko"
+      user-mail-address "dicko.ahmadou@gmail.com")
+   #+END_SRC
+
+** Customized stuff
+
+   Set up the customize file separated from [[file:init.el][init.el]]
+   #+begin_src emacs-lisp :tangle yes
+(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+(load custom-file)
+   #+end_src
+
+** Add package sources
+   #+BEGIN_SRC emacs-lisp :tangle yes
+(require 'package)
+(add-to-list 'package-archives
+             '("melpa" . "http://melpa.milkbox.net/packages/") t)
+(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
+(add-to-list 'package-archives
+             '("elpy" . "http://jorgenschaefer.github.io/packages/"))
+(package-initialize)
+   #+end_src
+
+** Add custom lisp path
+   #+BEGIN_SRC emacs-lisp :tangle yes
+(add-to-list 'load-path "~/.emacs.d/lisp")
+   #+end_src
+
+** Some useful shortcut
+   #+begin_src emacs-lisp :tangle yes
+(defun emacs-d (filename)
+  "Expand FILENAME relative to `user-emacs-directory'."
+  (expand-file-name filename user-emacs-directory))
+   #+end_src
+
+* Theme and visual aspect
+** Remove all clutter
+   #+BEGIN_SRC emacs-lisp :tangle yes
+(menu-bar-mode -1)
+(tooltip-mode -1)
+(tool-bar-mode -1)
+(scroll-bar-mode -1)
+(fringe-mode -1)
+(setq inhibit-splash-screen t)
+(setq ad-redefinition-action 'accept)
+   #+END_SRC
+
+** Moe theme
+   #+begin_src emacs-lisp :tangle yes
+(use-package moe-theme
+  :ensure t
+  :config
+  (setq moe-theme-highlight-buffer-id t)
+  (moe-dark))
+   #+end_src
+
+** Smart mode line and powerline
+*** Linum and hlinum
+    #+begin_src emacs-lisp :tangle yes
+(use-package linum
+ :config
+  (global-linum-mode t)
+  (setq-default truncate-lines t))
+(use-package hlinum
+  :ensure t
+  :config
+  (hlinum-activate))
+    #+end_src
+
+*** Smart mode line
+    #+begin_src emacs-lisp :tangle yes
+(use-package smart-mode-line
+  :ensure t
+  :defer t)
+    #+end_src
+
+*** SML mode and prettify everythings
+    #+begin_src emacs-lisp :tangle yes
+(setq sml/theme 'respectful)
+(global-prettify-symbols-mode 1)
+    #+end_src
+
+*** Powerline
+    #+begin_src emacs-lisp :tangle yes
+(use-package powerline
+  :ensure t
+  :config
+  (powerline-moe-theme))
+    #+end_src
+
+** Smartparens
+   #+begin_src emacs-lisp :tangle yes
+(use-package smartparens-config
+  :ensure smartparens
+  :config
+  (show-smartparens-global-mode t)
+  (add-hook 'prog-mode-hook 'turn-on-smartparens-mode)
+  (add-hook 'LaTeX-mode-hook 'turn-on-smartparens-mode)
+  (add-hook 'markdown-mode-hook 'turn-on-smartparens-mode)
+  (add-hook 'ess-mode-hook 'turn-on-smartparens-mode)
+  (add-hook 'org-mode-hook 'turn-on-smartparens-mode))
+   #+end_src
+
+** Icon-mode emacs
+   #+begin_src emacs-lisp :tangle yes
+(use-package mode-icons
+ :config
+ (progn
+   (mode-icons-mode)))
+   #+end_src
+
+
+** Autocomplete
+   #+begin_src emacs-lisp :tangle yes
+  (use-package auto-complete
+    :ensure t
+    :config
+    (progn
+      (use-package auto-complete-config)
+      (ac-config-default)
+      (define-key ac-completing-map (kbd "M-h") 'ac-quick-help)
+      (global-auto-complete-mode t)))  
+   #+end_src
+** Ido
+   #+begin_src emacs-lisp :tangle yes
+(use-package ido
+  :init
+  (setq ido-enable-flex-matching t)
+  (setq ido-everywhere t)
+  (ido-mode t)
+  (use-package ido-vertical-mode
+    :ensure t
+    :init (ido-vertical-mode 1)))
+   #+end_src
+
+* Scientific programming
+** Clojure
+*** Clojure mode
+    #+begin_src emacs-lisp :tangle yes
+(use-package clojure-mode
+  :ensure t
+  :defer t
+  :init
+  (add-to-list 'auto-mode-alist '("\\.edn$" . clojure-mode))
+  (add-to-list 'auto-mode-alist '("\\.cljx\\'" . clojure-mode))
+  (add-to-list 'auto-mode-alist '("\\.cljs$" . clojure-mode)))
+    #+end_src
+
+*** CIDER
+
+    #+begin_src emacs-lisp
+(use-package cider
+  :ensure t
+  :defer t
+  :config
+  (setq nrepl-hide-special-buffers t
+        nrepl-popup-stacktraces-in-repl t
+        cider-mode-line " CIDER"
+        cider-repl-display-in-current-window t
+        cider-auto-select-error-buffer nil
+        cider-repl-pop-to-buffer-on-connect nil
+        cider-show-error-buffer nil)
+  (defun cider-use-repl-tools ()
+    (interactive)
+    (cider-interactive-eval
+     "(use 'clojure.repl)"))
+
+  (bind-keys :map cider-repl-mode-map
+             ("M-r" . cider-refresh)
+             ("M-R" . cider-use-repl-tools)))
+    #+end_src
+
+** Scala
+*** Ensime
+    #+begin_src emacs-lisp :tangle yes
+(use-package ensime
+  :commands ensime ensime-mode)
+(add-hook 'scala-mode-hook 'ensime-mode)
+    #+end_src
+** ESS (R, Julia)
+
+   #+begin_src emacs-lisp :tangle yes
+  (use-package ess
+    :ensure t                             ; Check and install if necessary
+    :init (require 'ess-site)                     ; Load ESS
+    :config
+    (progn
+      (setq
+       inferior-ess-same-window nil       ; Run R in inferior window
+       ess-ask-for-ess-directory nil      ; Use current directory as working directory
+       inferior-R-args "--quiet --no-save" ; No save on exit
+       ess-swv-processor (quote knitr)    ; Use knitr instead of Sweave as ESS processor
+       ess-default-style 'RStudio)
+      (add-hook 'ess-mode-hook
+                (lambda ()
+                  (setq mode-require-final-newline nil)
+                  (setq mode-require-final-newline nil)))
+      (add-hook 'ess-mode-hook 'projectile-mode)   
+      (add-hook 'ess-help-mode-hook '(lambda ()
+                                 (when (string= ess-dialect "R")
+                                 (poly-ess-help+r-mode))))
+      (add-hook 'ess-R-post-run-hook 'smartparens-mode)
+      (add-hook 'iESS-mode-hook 'ansi-color-for-comint-mode-on)
+      (add-to-list 'comint-output-filter-functions 'ansi-color-process-output)))
+   #+end_src
+
+** Python
+   #+begin_src emacs-lisp :tangle yes
+     (use-package elpy
+       :ensure t
+       :defer 2
+       :config
+       (remove-hook 'elpy-modules 'elpy-module-flymake)
+       (remove-hook 'elpy-modules 'elpy-module-yasnippet)
+       (elpy-enable)
+       (elpy-use-ipython))
+   #+end_src
+
+** Misc
+   #+begin_src emacs-lisp :tangle no
+(load-library "pspp-mode.el")
+(require 'pspp-mode)
+   #+end_src
+* Literal programming
+** LateX
+   #+begin_src emacs-lisp :tangle yes
+  (use-package tex-site                   ; AUCTeX
+    :ensure auctex                        ; Check and install if necessary
+    :config 
+    (progn
+      (setq
+       TeX-parse-self t                   ; Enable parse on load.
+       TeX-auto-save nil                  ; Do not use folder 'auto' 
+       TeX-auto-global nil                ;   (useful in case of a master)
+       TeX-PDF-mode t                     ; Compile as PDF
+       TeX-show-compilation t             ; Show compilation buffer
+       TeX-source-correlate-mode t    
+       reftex-plug-into-AUCTeX t          ; Plug RefTeX to AUCTeX
+       reftex-default-bibliography '("~/Biblio/bibtex/biblio_thesis.bib")) ; Define default bib file
+       (add-hook 'LaTeX-mode-hook 
+                (lambda ()
+                  (LaTeX-math-mode)       ; math mode
+                  (flyspell-mode)         ; Flyspell checking
+                  (turn-on-reftex)        ; RefTeX on
+                  (setq 
+                   TeX-clean-confirm nil ; Clean up intermediary files without confirm
+                   TeX-command-default "LatexMk"))))
+    (use-package auto-complete-auctex     ; AUCTeX completions using auto-complete.el
+      :ensure t)                          ; Check and install if necessary
+    (use-package auctex-latexmk           ; Integration of LaTeXmk                                          ; https://github.com/tom-tan/auctex-latexmk
+      :ensure t                           ; Check and install if necessary
+      :config
+      (progn
+        (require 'auctex-latexmk)         ; Load LaTeXmk
+        (auctex-latexmk-setup))))          ; Enable --pvc mode for continuous compilation
+   #+end_src
+
+** Org-mode
+   #+begin_src emacs-lisp :tangle yes
+  (use-package org
+    :mode (("\\.org$" . org-mode))
+    :ensure org-plus-contrib
+    :config
+    (progn
+      (require 'org-bullets)
+      (require 'ox-nikola)
+      (setq org-latex-default-packages-alist (delete '("AUTO" "inputenc" t)
+                                                     org-latex-default-packages-alist))
+      (setq org-latex-default-packages-alist (delete '("T1" "fontenc" t)
+                                                     org-latex-default-packages-alist))
+      (add-to-list 'org-latex-packages-alist '("" "minted"))
+      (setq org-latex-pdf-process
+           '("latexmk -pdflatex='xelatex -shell-escape -interaction nonstopmode' -pdf -f %f"))
+      (setq org-src-fontify-natively t)
+      (setq org-odt-preferred-output-format "docx")
+      (setq org-latex-listings 'minted)
+      (setq org-latex-minted-options
+            '(("frame" "lines")
+              ("fontsize" "\\footnotesize")))
+      (setq org-latex-custom-lang-environments
+            '((R "rcode")))
+      (org-babel-do-load-languages
+       'org-babel-load-languages
+       '((emacs-lisp . t)
+         (latex . t)
+         (shell . t)
+         (sql . t)
+         (julia . t)
+         (python . t)    
+         (R . t)))
+      (setq org-src-fontify-natively t))
+    (add-hook 'org-mode-hook
+              (lambda ()
+                (push '("+begin_src" . ?¦) prettify-symbols-alist)
+                (push '("+end_src" . ?¦) prettify-symbols-alist)
+                (push '("+BEGIN_SRC" . ?¦) prettify-symbols-alist)
+                (push '("+END_SRC" . ?¦) prettify-symbols-alist)))
+    (setq org-confirm-babel-evaluate nil)
+    (add-hook 'org-babel-after-execute-hook 'org-display-inline-images) 
+    (add-hook 'org-mode-hook 'org-display-inline-images)
+    (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+    (define-skeleton org-skeleton
+      "Header info for a emacs-org file."
+      "Title: "
+      "#+TITLE:" str " \n"
+      "#+AUTHOR: Your Name\n"
+      "#+email: your-email@server.coom\n"
+      "#+BABEL: :session *R* :cache yes :results output graphics :exports both :tangle yes \n")
+    (global-set-key "\C-co" 'org-skeleton))
+   #+end_src
+
+*** Org-ravel
+    #+begin_src emacs-lisp :tangle no
+(load-library "ox-ravel.el")
+(require 'ox-ravel)
+    #+end_src
+
+
+** Markdown
+   #+begin_src emacs-lisp :tangle yes
+(use-package markdown-mode
+  :ensure t
+  :mode (("\\.markdown\\'" . markdown-mode)
+         ("\\.md\\'"       . markdown-mode)))
+   #+end_src
+
+** Polymode
+   #+begin_src emacs-lisp :tangle yes
+  (use-package polymode           ; ESS with polymode
+    :ensure t                         ; https://github.com/vitoshka/polymode
+    :config
+    (progn
+      (require 'poly-R)               
+      (require 'poly-markdown)
+      (require 'poly-noweb)
+      (add-to-list 'auto-mode-alist '("\\.md" . poly-markdown-mode)) ; Markdown files
+      (add-to-list 'auto-mode-alist '("\\.Rmd" . poly-markdown+r-mode))
+      (add-to-list 'auto-mode-alist '("\\.Rpres" . poly-markdown+r-mode))
+      (add-to-list 'auto-mode-alist '("\\.Snw" . poly-noweb+r-mode)) ; Sweave files
+      (add-to-list 'auto-mode-alist '("\\.Rnw" . poly-noweb+r-mode)) ; Sweave files
+      (add-to-list 'auto-mode-alist '("\\.Rd" . poly-ess-help+r-mode))))
+   #+end_src
+
+* Other tools 
+** Magit
+   #+begin_src emacs-lisp :tangle yes
+(use-package magit
+  :ensure t
+  :bind ("C-c g" . magit-status)
+  :config
+  (define-key magit-status-mode-map (kbd "q") 'magit-quit-session))
+   #+end_src
+
+** Projectile
+   #+BEGIN_SRC emacs-lisp :tangle yes
+    (use-package projectile
+      :ensure t
+      :defer t)
+   #+end_src
+
+** Mu4e
+   #+begin_src emacs-lisp :tangle yes
+     (use-package mu4e
+       :init
+       (progn
+         (use-package mu4e-contrib)
+         (use-package gnus-dired)
+         (use-package smtpmail)
+         (setq mu4e-maildir "~/.mail/cirad")
+         (setq mu4e-drafts-folder "/Drafts")
+         (setq mu4e-sent-folder   "/Sent")
+         (setq mu4e-trash-folder  "/Trash")
+         (setq mu4e-maildir-shortcuts
+               '( ("/Inbox"             . ?i)
+                  ("/Sent"              . ?s)
+                  ("/Drafts"            . ?d)
+                  ("/Trash"             . ?t)))
+         (setq mu4e-change-filenames-when-moving t)
+         (setq mu4e-get-mail-command "mbsync -a")
+         (setq mu4e-show-images t)
+         (setq mu4e-html2text-command 'mu4e-shr2text)
+         (setq mu4e-update-interval 900)
+         (setq mu4e-attachment-dir "~/Downloads")
+         (setq
+          mu4e-reply-to-address "ahmadou-hamady.dicko@cirad.fr"
+          user-mail-address "ahmadou-hamady.dicko@cirad.fr"
+          user-full-name  "Ahmadou H. Dicko"
+          mu4e-compose-signature
+          (concat
+           "Ahmadou H. Dicko\n"
+           "Post-doctoral researcher\n"
+           "CIRAD - UMR15 CIRAD/INRA Control of exotic and emerging diseases\n"))
+           ;;send mail using postfix
+           ;; (setq send-mail-function 'sendmail-send-it)
+           ;; (setq message-send-mail-function 'message-send-mail-with-sendmail)
+           (setq message-send-mail-function 'smtpmail-send-it
+           smtpmail-stream-type 'starttls
+           smtpmail-default-smtp-server "smtp.cirad.fr"
+           smtpmail-smtp-server "smtp.cirad.fr"
+           smtpmail-smtp-service 587)
+         (setq message-kill-buffer-on-exit t)
+         (setq mu4e-confirm-quit nil)
+         ;; make the `gnus-dired-mail-buffers' function also work on
+         ;; message-mode derived modes, such as mu4e-compose-mode
+         (defun gnus-dired-mail-buffers ()
+           "Return a list of active message buffers."
+           (let (buffers)
+         (save-current-buffer
+           (dolist (buffer (buffer-list t))
+             (set-buffer buffer)
+             (when (and (derived-mode-p 'message-mode)
+                        (null message-sent-message-via))
+               (push (buffer-name buffer) buffers))))
+         (nreverse buffers)))
+         (setq gnus-dired-mail-mode 'mu4e-user-agent)
+         (add-hook 'dired-mode-hook 'turn-on-gnus-dired-mode)))
+   #+end_src
+
+** Eww
+   #+begin_src emacs-lisp :tangle yes
+  (use-package eww-lnum
+    :ensure t
+    :init
+    (eval-after-load "eww"
+      '(progn (define-key eww-mode-map "f" 'eww-lnum-follow)
+              (define-key eww-mode-map "F" 'eww-lnum-universal)))
+    :config
+    (setq browse-url-browser-function 'eww-browse-url))
+
+   #+end_src
+** Tramp
+   #+begin_src emacs-lisp :tangle yes
+(setq tramp-default-method "ssh")
+   #+end_src
+
