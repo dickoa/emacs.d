@@ -5,28 +5,16 @@
 * Personal info and package source
 ** Personal information
 
-   #+BEGIN_SRC emacs-lisp :tangle yes
+   #+begin_src emacs-lisp :tangle yes
 (setq user-full-name "Ahmadou H. Dicko"
       user-mail-address "dicko.ahmadou@gmail.com")
-   #+END_SRC
+   #+end_src
 
 ** Customized stuff
 
-   Set up the customize file separated from [[file:init.el][init.el]]
    #+begin_src emacs-lisp :tangle yes
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (load custom-file)
-   #+end_src
-
-** Add package sources
-   #+BEGIN_SRC emacs-lisp :tangle yes
-(require 'package)
-(add-to-list 'package-archives
-             '("melpa" . "http://melpa.milkbox.net/packages/") t)
-(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
-(add-to-list 'package-archives
-             '("elpy" . "http://jorgenschaefer.github.io/packages/"))
-(package-initialize)
    #+end_src
 
 ** Add custom lisp path
@@ -39,6 +27,17 @@
 (defun emacs-d (filename)
   "Expand FILENAME relative to `user-emacs-directory'."
   (expand-file-name filename user-emacs-directory))
+   #+end_src
+
+** Add package sources
+   #+begin_src emacs-lisp :tangle yes
+(require 'package)
+(add-to-list 'package-archives
+             '("melpa" . "http://melpa.milkbox.net/packages/") t)
+(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
+(add-to-list 'package-archives
+             '("elpy" . "http://jorgenschaefer.github.io/packages/"))
+(package-initialize)
    #+end_src
 
 * Theme and visual aspect
@@ -61,14 +60,19 @@
   (setq moe-theme-highlight-buffer-id t)
   (moe-dark))
    #+end_src
-
+   
 ** Smart mode line and powerline
-*** Linum and hlinum
+*** Linum 
     #+begin_src emacs-lisp :tangle yes
 (use-package linum
  :config
   (global-linum-mode t)
   (setq-default truncate-lines t))
+    #+end_src
+
+*** Hlinum
+    #+begin_src emacs-lisp :tangle yes
+
 (use-package hlinum
   :ensure t
   :config
@@ -76,15 +80,17 @@
     #+end_src
 
 *** Smart mode line
-    #+begin_src emacs-lisp :tangle yes
+    #+begin_src emacs-lisp :tangle no
 (use-package smart-mode-line
   :ensure t
-  :defer t)
+  :defer t
+  :config
+  (setq sml/theme 'powerline)
+  (sml/setup))
     #+end_src
 
-*** SML mode and prettify everythings
+*** Prettify everythings
     #+begin_src emacs-lisp :tangle yes
-(setq sml/theme 'respectful)
 (global-prettify-symbols-mode 1)
     #+end_src
 
@@ -109,14 +115,33 @@
   (add-hook 'org-mode-hook 'turn-on-smartparens-mode))
    #+end_src
 
-** Icon-mode emacs
-   #+begin_src emacs-lisp :tangle yes
-(use-package mode-icons
- :config
- (progn
-   (mode-icons-mode)))
-   #+end_src
+** Icons
+*** Mode-icons
+    #+begin_src emacs-lisp :tangle yes
+     (use-package mode-icons                 
+      :config
+      (progn
+        (mode-icons-mode)))
+    #+end_src
 
+
+*** All-the-icons
+    #+begin_src emacs-lisp :tangle yes
+      (use-package all-the-icons
+        :config
+        (setq all-the-icons-color-icons t)
+        (setq all-the-icons-for-buffer t))                 
+    #+end_src
+
+
+** Neotree 
+   #+begin_src emacs-lisp :tangle yes
+     (use-package neotree                 
+      :config
+      (progn
+      (global-set-key [f8] 'neotree-toggle)
+      (setq neo-theme 'icons)))
+   #+end_src
 
 ** Autocomplete
    #+begin_src emacs-lisp :tangle yes
@@ -144,7 +169,7 @@
 * Scientific programming
 ** Clojure
 *** Clojure mode
-    #+begin_src emacs-lisp :tangle yes
+    #+begin_src emacs-lisp :tangle no
 (use-package clojure-mode
   :ensure t
   :defer t
@@ -156,7 +181,7 @@
 
 *** CIDER
 
-    #+begin_src emacs-lisp
+    #+begin_src emacs-lisp :tangle no
 (use-package cider
   :ensure t
   :defer t
@@ -180,7 +205,7 @@
 
 ** Scala
 *** Ensime
-    #+begin_src emacs-lisp :tangle yes
+    #+begin_src emacs-lisp :tangle no
 (use-package ensime
   :commands ensime ensime-mode)
 (add-hook 'scala-mode-hook 'ensime-mode)
@@ -188,41 +213,62 @@
 ** ESS (R, Julia)
 
    #+begin_src emacs-lisp :tangle yes
-  (use-package ess
-    :ensure t                             ; Check and install if necessary
-    :init (require 'ess-site)                     ; Load ESS
-    :config
-    (progn
-      (setq
-       inferior-ess-same-window nil       ; Run R in inferior window
-       ess-ask-for-ess-directory nil      ; Use current directory as working directory
-       inferior-R-args "--quiet --no-save" ; No save on exit
-       ess-swv-processor (quote knitr)    ; Use knitr instead of Sweave as ESS processor
-       ess-default-style 'RStudio)
-      (add-hook 'ess-mode-hook
-                (lambda ()
-                  (setq mode-require-final-newline nil)
-                  (setq mode-require-final-newline nil)))
-      (add-hook 'ess-mode-hook 'projectile-mode)   
-      (add-hook 'ess-help-mode-hook '(lambda ()
-                                 (when (string= ess-dialect "R")
-                                 (poly-ess-help+r-mode))))
-      (add-hook 'ess-R-post-run-hook 'smartparens-mode)
-      (add-hook 'iESS-mode-hook 'ansi-color-for-comint-mode-on)
-      (add-to-list 'comint-output-filter-functions 'ansi-color-process-output)))
+     (use-package ess
+       :ensure t                             ; Check and install if necessary
+       :init (require 'ess-site)                     ; Load ESS
+       :config
+       (progn
+         (setq
+          inferior-ess-same-window nil       ; Run R in inferior window
+          ess-ask-for-ess-directory nil      ; Use current directory as working directory
+          inferior-R-args "--quiet --no-save" ; No save on exit
+          ess-swv-processor (quote knitr)    ; Use knitr instead of Sweave as ESS processor
+          ess-default-style 'RStudio)
+         (setq prettify-symbols-alist '(("lambda" . 955)))
+         (add-hook 'ess-mode-hook
+                   (lambda ()
+                     (setq mode-require-final-newline nil)
+                     (setq mode-require-final-newline nil)))
+         (add-hook 'ess-mode-hook 'projectile-mode) 
+         (add-hook 'ess-help-mode-hook '(lambda ()
+                                          (when (string= ess-dialect "R")
+                                            (poly-ess-help+r-mode))))
+         (add-hook 'ess-R-post-run-hook 'smartparens-mode)
+         (add-hook 'iESS-mode-hook 'ansi-color-for-comint-mode-on)
+         (add-to-list 'comint-output-filter-functions 'ansi-color-process-output)))
    #+end_src
 
+
 ** Python
-   #+begin_src emacs-lisp :tangle yes
+*** Python mode customization
+    #+begin_src emacs-lisp :tangle yes
+      (setq python-shell-interpreter "ipython" 
+            python-shell-interpreter-args "-i --simple-prompt --pprint")
+      (add-hook 'python-mode-hook 'elpy-mode)
+    #+end_src
+
+*** Python-x ESS inspired 
+    #+begin_src emacs-lisp :tangle no
+     (use-package python-x
+       :ensure t
+       :config
+       (python-x-setup))
+    #+end_src
+
+*** Elpy mode
+    #+begin_src emacs-lisp :tangle yes
      (use-package elpy
        :ensure t
        :defer 2
        :config
        (remove-hook 'elpy-modules 'elpy-module-flymake)
        (remove-hook 'elpy-modules 'elpy-module-yasnippet)
-       (elpy-enable)
-       (elpy-use-ipython))
-   #+end_src
+       (define-key elpy-mode-map (kbd "C-c C-n") 'elpy-shell-send-current-statement)
+       (define-key elpy-mode-map (kbd "C-c C-v") 'elpy-doc)
+       (elpy-enable))
+    #+end_src
+
+
 
 ** Misc
    #+begin_src emacs-lisp :tangle no
@@ -265,64 +311,60 @@
 
 ** Org-mode
    #+begin_src emacs-lisp :tangle yes
-  (use-package org
-    :mode (("\\.org$" . org-mode))
-    :ensure org-plus-contrib
-    :config
-    (progn
-      (require 'org-bullets)
-      (require 'ox-nikola)
-      (setq org-latex-default-packages-alist (delete '("AUTO" "inputenc" t)
-                                                     org-latex-default-packages-alist))
-      (setq org-latex-default-packages-alist (delete '("T1" "fontenc" t)
-                                                     org-latex-default-packages-alist))
-      (add-to-list 'org-latex-packages-alist '("" "minted"))
-      (setq org-latex-pdf-process
-           '("latexmk -pdflatex='xelatex -shell-escape -interaction nonstopmode' -pdf -f %f"))
-      (setq org-src-fontify-natively t)
-      (setq org-odt-preferred-output-format "docx")
-      (setq org-latex-listings 'minted)
-      (setq org-latex-minted-options
-            '(("frame" "lines")
-              ("fontsize" "\\footnotesize")))
-      (setq org-latex-custom-lang-environments
-            '((R "rcode")))
-      (org-babel-do-load-languages
-       'org-babel-load-languages
-       '((emacs-lisp . t)
-         (latex . t)
-         (shell . t)
-         (sql . t)
-         (julia . t)
-         (python . t)    
-         (R . t)))
-      (setq org-src-fontify-natively t))
-    (add-hook 'org-mode-hook
-              (lambda ()
-                (push '("+begin_src" . ?¦) prettify-symbols-alist)
-                (push '("+end_src" . ?¦) prettify-symbols-alist)
-                (push '("+BEGIN_SRC" . ?¦) prettify-symbols-alist)
-                (push '("+END_SRC" . ?¦) prettify-symbols-alist)))
-    (setq org-confirm-babel-evaluate nil)
-    (add-hook 'org-babel-after-execute-hook 'org-display-inline-images) 
-    (add-hook 'org-mode-hook 'org-display-inline-images)
-    (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
-    (define-skeleton org-skeleton
-      "Header info for a emacs-org file."
-      "Title: "
-      "#+TITLE:" str " \n"
-      "#+AUTHOR: Your Name\n"
-      "#+email: your-email@server.coom\n"
-      "#+BABEL: :session *R* :cache yes :results output graphics :exports both :tangle yes \n")
-    (global-set-key "\C-co" 'org-skeleton))
+     (use-package org
+       :mode (("\\.org$" . org-mode))
+       :ensure org-plus-contrib
+       :config
+       (progn
+         (setq org-latex-default-packages-alist (delete '("AUTO" "inputenc" t)
+                                                        org-latex-default-packages-alist))
+         (setq org-latex-default-packages-alist (delete '("T1" "fontenc" t)
+                                                        org-latex-default-packages-alist))
+         (add-to-list 'org-latex-packages-alist '("" "minted"))
+         (setq org-latex-pdf-process
+               '("latexmk -pdflatex='xelatex -shell-escape -interaction nonstopmode' -pdf -f %f"))
+         (setq org-src-fontify-natively t)
+         (setq org-odt-preferred-output-format "docx")
+         (setq org-latex-listings 'minted)
+         (setq org-latex-minted-options
+               '(("frame" "lines")
+                 ("fontsize" "\\footnotesize")))
+         (setq org-latex-custom-lang-environments
+               '((R "rcode")))
+         (org-babel-do-load-languages
+          'org-babel-load-languages
+          '((emacs-lisp . t)
+            (latex . t)
+            (shell . t)
+            (sql . t)
+            (julia . t)
+            (python . t)    
+            (ipython . t)    
+            (R . t))))
+       (add-hook 'org-mode-hook
+                 (lambda ()
+                   (push '("+begin_src" . ?¦) prettify-symbols-alist)
+                   (push '("+end_src" . ?¦) prettify-symbols-alist)
+                   (push '("+BEGIN_SRC" . ?¦) prettify-symbols-alist)
+                   (push '("+END_SRC" . ?¦) prettify-symbols-alist)))
+       (setq org-confirm-babel-evaluate nil)
+       (add-hook 'org-babel-after-execute-hook 'org-display-inline-images) 
+       (add-hook 'org-mode-hook 'org-display-inline-images))
    #+end_src
+
+*** Org pres
+    #+begin_src emacs-lisp :tangle yes
+      ;; (load-library "org-remark/ox-remark.el")
+      (require 'ox-reveal)
+      ;; (require 'ox-remark)
+    #+end_src
+
 
 *** Org-ravel
     #+begin_src emacs-lisp :tangle no
 (load-library "ox-ravel.el")
 (require 'ox-ravel)
     #+end_src
-
 
 ** Markdown
    #+begin_src emacs-lisp :tangle yes
@@ -397,7 +439,7 @@
           (concat
            "Ahmadou H. Dicko\n"
            "Post-doctoral researcher\n"
-           "CIRAD - UMR15 CIRAD/INRA Control of exotic and emerging diseases\n"))
+           "CIRAD/INRA UMR117 ASTRE\n"))
            ;;send mail using postfix
            ;; (setq send-mail-function 'sendmail-send-it)
            ;; (setq message-send-mail-function 'message-send-mail-with-sendmail)
