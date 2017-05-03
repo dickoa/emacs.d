@@ -281,7 +281,6 @@
        TeX-show-compilation t             ; Show compilation buffer
        TeX-source-correlate-mode t    
        reftex-plug-into-AUCTeX t          ; Plug RefTeX to AUCTeX
-       reftex-default-bibliography '("~/Biblio/bibtex/biblio_thesis.bib")) ; Define default bib file
        (add-hook 'LaTeX-mode-hook 
                 (lambda ()
                   (LaTeX-math-mode)       ; math mode
