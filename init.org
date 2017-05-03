@@ -52,6 +52,12 @@
 (setq ad-redefinition-action 'accept)
    #+END_SRC
 
+** Default font
+   #+begin_src emacs-lisp :tangle yes
+(add-to-list 'default-frame-alist '(font . "Source Code Pro SemiBold-12"))
+(set-face-attribute 'default t :font  "Source Code Pro SemiBold-12")
+   #+end_src
+
 ** Moe theme
    #+begin_src emacs-lisp :tangle yes
 (use-package moe-theme
@@ -72,7 +78,6 @@
 
 *** Hlinum
     #+begin_src emacs-lisp :tangle yes
-
 (use-package hlinum
   :ensure t
   :config
@@ -124,13 +129,13 @@
         (mode-icons-mode)))
     #+end_src
 
-
 *** All-the-icons
     #+begin_src emacs-lisp :tangle yes
       (use-package all-the-icons
         :config
         (setq all-the-icons-color-icons t)
-        (setq all-the-icons-for-buffer t))                 
+        (setq all-the-icons-for-buffer t)
+	(add-hook 'dired-mode-hook 'all-the-icons-dired-mode))                 
     #+end_src
 
 
@@ -140,7 +145,7 @@
       :config
       (progn
       (global-set-key [f8] 'neotree-toggle)
-      (setq neo-theme 'icons)))
+      (setq neo-theme (if (display-graphic-p) 'icons 'arrow))))
    #+end_src
 
 ** Autocomplete
@@ -180,7 +185,6 @@
     #+end_src
 
 *** CIDER
-
     #+begin_src emacs-lisp :tangle no
 (use-package cider
   :ensure t
@@ -210,18 +214,18 @@
   :commands ensime ensime-mode)
 (add-hook 'scala-mode-hook 'ensime-mode)
     #+end_src
-** ESS (R, Julia)
 
+** ESS (R, Julia)
    #+begin_src emacs-lisp :tangle yes
      (use-package ess
-       :ensure t                             ; Check and install if necessary
-       :init (require 'ess-site)                     ; Load ESS
+       :ensure t                             
+       :init (require 'ess-site)                     
        :config
        (progn
          (setq
-          inferior-ess-same-window nil       ; Run R in inferior window
-          ess-ask-for-ess-directory nil      ; Use current directory as working directory
-          inferior-R-args "--quiet --no-save" ; No save on exit
+          inferior-ess-same-window nil       
+          ess-ask-for-ess-directory nil      ; don't ask wkd
+          inferior-R-args "--quiet --no-save" ; no save
           ess-swv-processor (quote knitr)    ; Use knitr instead of Sweave as ESS processor
           ess-default-style 'RStudio)
          (setq prettify-symbols-alist '(("lambda" . 955)))
@@ -247,13 +251,6 @@
       (add-hook 'python-mode-hook 'elpy-mode)
     #+end_src
 
-*** Python-x ESS inspired 
-    #+begin_src emacs-lisp :tangle no
-     (use-package python-x
-       :ensure t
-       :config
-       (python-x-setup))
-    #+end_src
 
 *** Elpy mode
     #+begin_src emacs-lisp :tangle yes
@@ -269,12 +266,6 @@
     #+end_src
 
 
-
-** Misc
-   #+begin_src emacs-lisp :tangle no
-(load-library "pspp-mode.el")
-(require 'pspp-mode)
-   #+end_src
 * Literal programming
 ** LateX
    #+begin_src emacs-lisp :tangle yes
@@ -316,49 +307,56 @@
        :ensure org-plus-contrib
        :config
        (progn
-         (setq org-latex-default-packages-alist (delete '("AUTO" "inputenc" t)
-                                                        org-latex-default-packages-alist))
-         (setq org-latex-default-packages-alist (delete '("T1" "fontenc" t)
-                                                        org-latex-default-packages-alist))
-         (add-to-list 'org-latex-packages-alist '("" "minted"))
+         (setq org-latex-default-packages-alist
+               '(("" "fontspec" t)
+                 ("" "xltxtra" t)
+                 ("" "xunicode" t)
+                 ("" "url" t)
+                 ("" "rotating" t)
+                 ("" "babel" t)
+                 ("babel" "csquotes" t)
+                 ("" "soul" t)
+      		 ("" "minted" t)
+      		 ("" "polyglossia" t)
+   		 ("" "longtable" nil)
+   		 ("" "wrapfig" nil)
+                 ("" "hyperref" nil)))
          (setq org-latex-pdf-process
-               '("latexmk -pdflatex='xelatex -shell-escape -interaction nonstopmode' -pdf -f %f"))
+   	    '("latexmk -pdflatex='xelatex -shell-escape -interaction nonstopmode' -pdf -f %f"))
          (setq org-src-fontify-natively t)
          (setq org-odt-preferred-output-format "docx")
          (setq org-latex-listings 'minted)
          (setq org-latex-minted-options
-               '(("frame" "lines")
-                 ("fontsize" "\\footnotesize")))
+   	    '(("frame" "lines")
+   	      ("fontsize" "\\footnotesize")))
          (setq org-latex-custom-lang-environments
-               '((R "rcode")))
+   	    '((R "rcode")))
          (org-babel-do-load-languages
           'org-babel-load-languages
           '((emacs-lisp . t)
-            (latex . t)
-            (shell . t)
-            (sql . t)
-            (julia . t)
-            (python . t)    
-            (ipython . t)    
-            (R . t))))
+   	 (latex . t)
+   	 (shell . t)
+   	 (sql . t)
+   	 (julia . t)
+   	 (python . t)    
+   	 (ipython . t)  
+	 (js . t)    
+   	 (R . t))))
        (add-hook 'org-mode-hook
-                 (lambda ()
-                   (push '("+begin_src" . ?¦) prettify-symbols-alist)
-                   (push '("+end_src" . ?¦) prettify-symbols-alist)
-                   (push '("+BEGIN_SRC" . ?¦) prettify-symbols-alist)
-                   (push '("+END_SRC" . ?¦) prettify-symbols-alist)))
+   	      (lambda ()
+   		(push '("+begin_src" . ?¦) prettify-symbols-alist)
+   		(push '("+end_src" . ?¦) prettify-symbols-alist)
+   		(push '("+BEGIN_SRC" . ?¦) prettify-symbols-alist)
+   		(push '("+END_SRC" . ?¦) prettify-symbols-alist)))
        (setq org-confirm-babel-evaluate nil)
        (add-hook 'org-babel-after-execute-hook 'org-display-inline-images) 
        (add-hook 'org-mode-hook 'org-display-inline-images))
    #+end_src
 
-*** Org pres
+*** Org reveal
     #+begin_src emacs-lisp :tangle yes
-      ;; (load-library "org-remark/ox-remark.el")
       (require 'ox-reveal)
-      ;; (require 'ox-remark)
     #+end_src
-
 
 *** Org-ravel
     #+begin_src emacs-lisp :tangle no
@@ -409,7 +407,7 @@
    #+end_src
 
 ** Mu4e
-   #+begin_src emacs-lisp :tangle yes
+   #+begin_src emacs-lisp :tangle no
      (use-package mu4e
        :init
        (progn
