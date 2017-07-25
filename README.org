@@ -5,9 +5,7 @@
 
 * Table of Contents                                                     :TOC:
  - [[#getting-started][Getting started]]
-   - [[#a-note-on-the-use-of-org-mode-for-literate-configuration][A note on the use of =org-mode= for literate configuration]]
  - [[#screenshots][Screenshots]]
- - [[#to-do][To-do]]
 
 * Getting started
 
