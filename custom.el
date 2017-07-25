@@ -35,11 +35,28 @@
      (ess-fl-keyword:delimiters)
      (ess-fl-keyword:=)
      (ess-R-fl-keyword:F&T . t))))
+ '(inferior-ess-r-font-lock-keywords
+   (quote
+    ((ess-S-fl-keyword:prompt . t)
+     (ess-R-fl-keyword:messages . t)
+     (ess-R-fl-keyword:modifiers . t)
+     (ess-R-fl-keyword:fun-defs . t)
+     (ess-R-fl-keyword:keywords . t)
+     (ess-R-fl-keyword:assign-ops . t)
+     (ess-R-fl-keyword:constants . t)
+     (ess-fl-keyword:matrix-labels . t)
+     (ess-fl-keyword:fun-calls . t)
+     (ess-fl-keyword:numbers)
+     (ess-fl-keyword:operators . t)
+     (ess-fl-keyword:delimiters)
+     (ess-fl-keyword:=)
+     (ess-R-fl-keyword:F&T . t))))
+ '(menu-bar-mode nil)
  '(org-export-backends (quote (ascii beamer html latex md odt org)))
  '(org-trello-current-prefix-keybinding "C-c o")
  '(package-selected-packages
    (quote
-    (indium adaptive-wrap ob-async ob-sql-mode eval-in-repl org-beautify-theme mu4e-alert org-alert all-the-icons-dired org-gcal org-gnome org-jira org-readme skewer-mode tabbar tabbar-ruler emmet-mode confluence org-trello org-plus-contrib volatile-highlights smart-tabs-mode smart-mode-line-powerline-theme ample-theme ob-ipython ein aggressive-indent neotree all-the-icons ivy-bibtex ivy-gitlab python-environment python-mode python-test python-x slack elfeed elfeed-goodies elfeed-org monroe gitlab use-package swiper stan-mode smartparens smart-mode-line scala-mode2 projectile powerline polymode ox-reveal ox-nikola ox-ioslide org-eww org-bullets ob-lisp moe-theme mode-icons markdown-mode magit ido-vertical-mode ido-ubiquitous htmlize hlinum grass-mode flymd eww-lnum ess ensime elpy cider biblio bbdb auto-complete-auctex auctex-latexmk 0blayout)))
+    (no-littering js3-mode indium adaptive-wrap ob-async ob-sql-mode eval-in-repl org-beautify-theme mu4e-alert org-alert all-the-icons-dired org-gcal org-gnome org-jira org-readme skewer-mode tabbar tabbar-ruler emmet-mode confluence org-trello org-plus-contrib volatile-highlights smart-tabs-mode smart-mode-line-powerline-theme ample-theme ob-ipython ein aggressive-indent neotree all-the-icons ivy-bibtex ivy-gitlab python-environment python-mode python-test python-x slack monroe gitlab use-package swiper stan-mode smartparens smart-mode-line scala-mode2 projectile powerline polymode ox-reveal ox-nikola ox-ioslide org-eww org-bullets ob-lisp moe-theme mode-icons markdown-mode magit ido-vertical-mode ido-ubiquitous htmlize hlinum grass-mode flymd eww-lnum ess ensime elpy cider biblio bbdb auto-complete-auctex auctex-latexmk 0blayout)))
  '(tool-bar-mode nil))
 
 ;; (custom-set-faces

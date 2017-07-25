@@ -7,7 +7,7 @@
 
    #+begin_src emacs-lisp :tangle yes
 (setq user-full-name "Ahmadou H. Dicko"
-      user-mail-address "dicko.ahmadou@gmail.com")
+      user-mail-address "dicko.ahmadou at gmail dot com")
    #+end_src
 
 ** Customized stuff
@@ -21,6 +21,8 @@
    #+BEGIN_SRC emacs-lisp :tangle yes
 (add-to-list 'load-path "~/.emacs.d/lisp")
    #+end_src
+
+
 
 ** Some useful shortcut
    #+begin_src emacs-lisp :tangle yes
@@ -39,6 +41,16 @@
              '("elpy" . "http://jorgenschaefer.github.io/packages/"))
 (package-initialize)
    #+end_src
+
+** Clean .emacs.d
+#+begin_src emacs-lisp :tangle yes
+  (use-package no-littering               ; Keep .emacs.d clean
+    :ensure t
+    :config
+    (require 'recentf)
+    (add-to-list 'recentf-exclude no-littering-var-directory)
+    (add-to-list 'recentf-exclude no-littering-etc-directory))   
+#+end_src
 
 * Theme and visual aspect
 ** Remove all clutter
@@ -171,7 +183,7 @@
     :init (ido-vertical-mode 1)))
    #+end_src
 
-* Scientific programming
+* Data science tools
 ** Clojure
 *** Clojure mode
     #+begin_src emacs-lisp :tangle no
@@ -239,9 +251,9 @@
                                             (poly-ess-help+r-mode))))
          (add-hook 'ess-R-post-run-hook 'smartparens-mode)
          (add-hook 'iESS-mode-hook 'ansi-color-for-comint-mode-on)
+	 ;; add pipe shortcut
          (add-to-list 'comint-output-filter-functions 'ansi-color-process-output)))
    #+end_src
-
 
 ** Python
 *** Python mode customization
@@ -250,7 +262,6 @@
             python-shell-interpreter-args "-i --simple-prompt --pprint")
       (add-hook 'python-mode-hook 'elpy-mode)
     #+end_src
-
 
 *** Elpy mode
     #+begin_src emacs-lisp :tangle yes
@@ -265,40 +276,12 @@
        (elpy-enable))
     #+end_src
 
+** Javascript
+    #+begin_src emacs-lisp :tangle no
+(use-package indium)
+    #+end_src
 
-* Literal programming
-** LateX
-   #+begin_src emacs-lisp :tangle yes
-  (use-package tex-site                   ; AUCTeX
-    :ensure auctex                        ; Check and install if necessary
-    :config 
-    (progn
-      (setq
-       TeX-parse-self t                   ; Enable parse on load.
-       TeX-auto-save nil                  ; Do not use folder 'auto' 
-       TeX-auto-global nil                ;   (useful in case of a master)
-       TeX-PDF-mode t                     ; Compile as PDF
-       TeX-show-compilation t             ; Show compilation buffer
-       TeX-source-correlate-mode t    
-       reftex-plug-into-AUCTeX t          ; Plug RefTeX to AUCTeX
-       (add-hook 'LaTeX-mode-hook 
-                (lambda ()
-                  (LaTeX-math-mode)       ; math mode
-                  (flyspell-mode)         ; Flyspell checking
-                  (turn-on-reftex)        ; RefTeX on
-                  (setq 
-                   TeX-clean-confirm nil ; Clean up intermediary files without confirm
-                   TeX-command-default "LatexMk"))))
-    (use-package auto-complete-auctex     ; AUCTeX completions using auto-complete.el
-      :ensure t)                          ; Check and install if necessary
-    (use-package auctex-latexmk           ; Integration of LaTeXmk                                          ; https://github.com/tom-tan/auctex-latexmk
-      :ensure t                           ; Check and install if necessary
-      :config
-      (progn
-        (require 'auctex-latexmk)         ; Load LaTeXmk
-        (auctex-latexmk-setup))))          ; Enable --pvc mode for continuous compilation
-   #+end_src
-
+* Literal programming tools
 ** Org-mode
    #+begin_src emacs-lisp :tangle yes
      (use-package org
@@ -311,14 +294,8 @@
                  ("" "xltxtra" t)
                  ("" "xunicode" t)
                  ("" "url" t)
-                 ("" "rotating" t)
-                 ("" "babel" t)
-                 ("babel" "csquotes" t)
-                 ("" "soul" t)
+                 ("" "booktabs" t)
       		 ("" "minted" t)
-      		 ("" "polyglossia" t)
-   		 ("" "longtable" nil)
-   		 ("" "wrapfig" nil)
                  ("" "hyperref" nil)))
          (setq org-latex-pdf-process
    	    '("latexmk -pdflatex='xelatex -shell-escape -interaction nonstopmode' -pdf -f %f"))
@@ -363,6 +340,36 @@
 (require 'ox-ravel)
     #+end_src
 
+** LateX
+   #+begin_src emacs-lisp :tangle yes
+     (use-package tex-site                   ; AUCTeX
+       :ensure auctex                        ; Check and install if necessary
+       :config 
+       (progn
+	 (setq
+	  TeX-parse-self t                   ; Enable parse on load.
+	  TeX-auto-save nil                  ; Do not use folder 'auto' 
+	  TeX-auto-global nil                ;   (useful in case of a master)
+	  TeX-PDF-mode t                     ; Compile as PDF
+	  TeX-show-compilation t             ; Show compilation buffer
+	  TeX-source-correlate-mode t)    
+	  (add-hook 'LaTeX-mode-hook 
+		    (lambda ()
+		      (LaTeX-math-mode)       ; math mode
+		      (flyspell-mode)         ; Flyspell checking
+		      (setq 
+		       TeX-clean-confirm nil ; Clean up intermediary files without confirm
+		       TeX-command-default "LatexMk"))))
+       (use-package auto-complete-auctex     ; AUCTeX completions using auto-complete.el
+	 :ensure t)                          ; Check and install if necessary
+       (use-package auctex-latexmk           ; Integration of LaTeXmk                       
+	 :ensure t                           ; Check and install if necessary
+	 :config
+	 (progn
+	   (require 'auctex-latexmk)         ; Load LaTeXmk
+	   (auctex-latexmk-setup))))         ; Enable --pvc mode for continuous compilation
+   #+end_src
+
 ** Markdown
    #+begin_src emacs-lisp :tangle yes
 (use-package markdown-mode
@@ -380,6 +387,7 @@
       (require 'poly-R)               
       (require 'poly-markdown)
       (require 'poly-noweb)
+      ;; Add shortcut to add snippet ```{r} ```
       (add-to-list 'auto-mode-alist '("\\.md" . poly-markdown-mode)) ; Markdown files
       (add-to-list 'auto-mode-alist '("\\.Rmd" . poly-markdown+r-mode))
       (add-to-list 'auto-mode-alist '("\\.Rpres" . poly-markdown+r-mode))
@@ -413,7 +421,7 @@
          (use-package mu4e-contrib)
          (use-package gnus-dired)
          (use-package smtpmail)
-         (setq mu4e-maildir "~/.mail/cirad")
+         (setq mu4e-maildir "~/.mail/gmail")
          (setq mu4e-drafts-folder "/Drafts")
          (setq mu4e-sent-folder   "/Sent")
          (setq mu4e-trash-folder  "/Trash")
@@ -429,21 +437,21 @@
          (setq mu4e-update-interval 900)
          (setq mu4e-attachment-dir "~/Downloads")
          (setq
-          mu4e-reply-to-address "ahmadou-hamady.dicko@cirad.fr"
-          user-mail-address "ahmadou-hamady.dicko@cirad.fr"
+          mu4e-reply-to-address "dicko.ahmadou@gmail.com"
+          user-mail-address "dicko.ahmadou@gmail.com"
           user-full-name  "Ahmadou H. Dicko"
           mu4e-compose-signature
           (concat
            "Ahmadou H. Dicko\n"
-           "Post-doctoral researcher\n"
-           "CIRAD/INRA UMR117 ASTRE\n"))
+           "Data hackers\n"
+           "Humanitarian Data Exchange\n"))
            ;;send mail using postfix
            ;; (setq send-mail-function 'sendmail-send-it)
            ;; (setq message-send-mail-function 'message-send-mail-with-sendmail)
            (setq message-send-mail-function 'smtpmail-send-it
            smtpmail-stream-type 'starttls
-           smtpmail-default-smtp-server "smtp.cirad.fr"
-           smtpmail-smtp-server "smtp.cirad.fr"
+           smtpmail-default-smtp-server "smtp.gmail.com"
+           smtpmail-smtp-server "smtp.gmail.com"
            smtpmail-smtp-service 587)
          (setq message-kill-buffer-on-exit t)
          (setq mu4e-confirm-quit nil)
@@ -464,7 +472,7 @@
    #+end_src
 
 ** Eww
-   #+begin_src emacs-lisp :tangle yes
+   #+begin_src emacs-lisp :tangle no
   (use-package eww-lnum
     :ensure t
     :init
@@ -479,4 +487,5 @@
    #+begin_src emacs-lisp :tangle yes
 (setq tramp-default-method "ssh")
    #+end_src
+
 

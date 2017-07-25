@@ -1,2 +1,74 @@
 #+TITLE: My personal emacs configuration based on org-mode
+#+AUTHOR: Ahmadou Dicko
+#+EMAIL: dicko.ahmadou@gmail.com
+
+
+* Table of Contents                                                     :TOC:
+ - [[#getting-started][Getting started]]
+   - [[#a-note-on-the-use-of-org-mode-for-literate-configuration][A note on the use of =org-mode= for literate configuration]]
+ - [[#screenshots][Screenshots]]
+ - [[#to-do][To-do]]
+
+* Getting started
+
+This is a configuration for Emacs on Arch Linux running the development version of Emacs (26.0.5 as of writing)
+
+** Configuring Emacs
+
+To configure Emacs, the easiest is simply to clone this repository in
+the =home= directory :
+
+#+BEGIN_SRC sh :eval no
+  git clone https://gitlab.com/dickoa/.emacs.d ~
+  #+END_SRC
+
+And that's it! Opening Emacs will then do the magic!
+
+** A note on the use of =org-mode= for literate configuration
+
+The [[https://github.com/larstvei/dot-emacs][original idea]] is to embed configuration bits into an Org file
+([[/init.org][init.org]]), which contains both code and explanations, making it a lot
+easier to navigate and configure. Emacs, with the use of =org-babel=
+is able to extract all configuration bits and assemble them in a
+standard =init.el= file, and its compiled version =init.elc=. The
+trick to make it work is that there is already an initial =init.el=
+file provided with this repository, which does the job the first time
+Emacs is loaded.
+
+This file looks like that:
+
+#+BEGIN_SRC emacs-lisp :eval no
+(setq user-full-name "Ahmadou H. Dicko"
+      user-mail-address "dicko.ahmadou at gmail dot com")
+
+(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+(load custom-file)
+
+(add-to-list 'load-path "~/.emacs.d/lisp")
+#+END_SRC
+
+
+After this initial load, a function (=tangle-init=) ensures that a new
+=init.el= is generated at every modification of =init.org= (precisely
+every time =init.org= is saved).
+
+* Screenshots
+** ESS R
+** ESS Julia
+** Elpy
+** Org-mode
+** Rmarkdown
+
+  #+CAPTION: Emacs in Org mode + project explorer + Magit
+  #+NAME: emacs-org
+  [[emacs-proj-org-magit.png]]
+
+- Emacs opened with a RMarkdown file (=.Rmd=), including YAML headers
+  and R code chunks, with the help page of a function in the right
+  window together with the R buffer at the bottom.
+
+  #+CAPTION: Emacs on a RMarkdown file (with ESS)
+  #+NAME: emacs-ess
+  [[emacs-markdown-yaml-ess.png]]
+
 
