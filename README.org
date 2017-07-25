@@ -68,16 +68,3 @@ every time =init.org= is saved).
 ** Org-mode
 ** Rmarkdown
 
-  #+CAPTION: Emacs in Org mode + project explorer + Magit
-  #+NAME: emacs-org
-  [[emacs-proj-org-magit.png]]
-
-- Emacs opened with a RMarkdown file (=.Rmd=), including YAML headers
-  and R code chunks, with the help page of a function in the right
-  window together with the R buffer at the bottom.
-
-  #+CAPTION: Emacs on a RMarkdown file (with ESS)
-  #+NAME: emacs-ess
-  [[emacs-markdown-yaml-ess.png]]
-
-
