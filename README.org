@@ -54,8 +54,17 @@ every time =init.org= is saved).
 
 * Screenshots
 ** ESS R
+
+[[./figs/essR.png]]
+
 ** ESS Julia
+
+[[./figs/essJulia.png]]
+
 ** Elpy
+
+[[./figs/elpyPython.png]]
+
 ** Org-mode
 ** Rmarkdown
 
