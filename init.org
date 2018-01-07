@@ -71,29 +71,14 @@
 (setq ad-redefinition-action 'accept)
    #+END_SRC
 
-** Default font
-   #+begin_src emacs-lisp :tangle no
-(add-to-list 'default-frame-alist '(font . "Source Code Pro SemiBold-12"))
-(set-face-attribute 'default t :font  "Source Code Pro SemiBold-12")
-   #+end_src
-
 ** Moe theme
    #+begin_src emacs-lisp :tangle yes
      (use-package moe-theme
        :ensure t
        :config
        (setq moe-theme-highlight-buffer-id t)
-       (moe-dark))
+       (moe-light))
    #+end_src
-
-** Material theme
-   #+begin_src emacs-lisp :tangle no
-     (use-package material-theme
-       :ensure t
-       :config
-       (load-theme 'material 'no-confirm))
-   #+end_src
-   
 ** Smart mode line and powerline
 *** Linum 
     #+begin_src emacs-lisp :tangle yes
@@ -458,9 +443,9 @@
           user-full-name  "Ahmadou H. Dicko"
           mu4e-compose-signature
           (concat
-           "Ahmadou H. Dicko\n"
-           "Data hackers\n"
-           "Humanitarian Data Exchange\n"))
+           "Ahmadou H. Dicko, PhD\n"
+           "Statistical consultant\n"
+           "Stat4D\n"))
            ;;send mail using postfix
            ;; (setq send-mail-function 'sendmail-send-it)
            ;; (setq message-send-mail-function 'message-send-mail-with-sendmail)
@@ -499,24 +484,6 @@
     (setq browse-url-browser-function 'eww-browse-url))
 
    #+end_src
-
-** Webkit
-
-#+begin_src emacs-lisp :tangle yes
-  ;; make these keys behave like normal browser
-  (use-package xwidget
-    :ensure t
-    :init
-    (eval-after-load "xwidget"
-      '(progn (define-key xwidget-webkit-mode-map [mouse-4] 'xwidget-webkit-scroll-down)
-	      (define-key xwidget-webkit-mode-map [mouse-5] 'xwidget-webkit-scroll-up)
-	      (define-key xwidget-webkit-mode-map (kbd "<up>") 'xwidget-webkit-scroll-down)
-	      (define-key xwidget-webkit-mode-map (kbd "<down>") 'xwidget-webkit-scroll-up)
-	      (define-key xwidget-webkit-mode-map (kbd "M-w") 'xwidget-webkit-copy-selection-as-kill)
-	      (define-key xwidget-webkit-mode-map (kbd "C-c") 'xwidget-webkit-copy-selection-as-kill)))
-    :config
-    (setq browse-url-browser-function 'xwidget-webkit-browse-url))
-#+end_src
 
 ** Tramp
    #+begin_src emacs-lisp :tangle yes
