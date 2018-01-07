@@ -11,7 +11,6 @@
    #+end_src
 
 ** Customized stuff
-
    #+begin_src emacs-lisp :tangle yes
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (load custom-file)
@@ -22,8 +21,6 @@
 (add-to-list 'load-path "~/.emacs.d/lisp")
    #+end_src
 
-
-
 ** Some useful shortcut
    #+begin_src emacs-lisp :tangle yes
 (defun emacs-d (filename)
@@ -33,7 +30,8 @@
 
 ** Add package sources
    #+begin_src emacs-lisp :tangle yes
-(require 'package)
+   (require 'package)
+(setq package-enable-at-startup nil)
 (add-to-list 'package-archives
              '("melpa" . "http://melpa.milkbox.net/packages/") t)
 (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
@@ -42,8 +40,17 @@
 (package-initialize)
    #+end_src
 
+** Use package
+   #+begin_src emacs-lisp :tangle yes
+     ;; Bootstrap `use-package'
+     (unless (package-installed-p 'use-package)
+       (package-refresh-contents)
+       (package-install 'use-package))
+     (require 'use-package)
+  #+end_src
+
 ** Clean .emacs.d
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
   (use-package no-littering               ; Keep .emacs.d clean
     :ensure t
     :config
@@ -65,18 +72,26 @@
    #+END_SRC
 
 ** Default font
-   #+begin_src emacs-lisp :tangle yes
+   #+begin_src emacs-lisp :tangle no
 (add-to-list 'default-frame-alist '(font . "Source Code Pro SemiBold-12"))
 (set-face-attribute 'default t :font  "Source Code Pro SemiBold-12")
    #+end_src
 
 ** Moe theme
    #+begin_src emacs-lisp :tangle yes
-(use-package moe-theme
-  :ensure t
-  :config
-  (setq moe-theme-highlight-buffer-id t)
-  (moe-dark))
+     (use-package moe-theme
+       :ensure t
+       :config
+       (setq moe-theme-highlight-buffer-id t)
+       (moe-dark))
+   #+end_src
+
+** Material theme
+   #+begin_src emacs-lisp :tangle no
+     (use-package material-theme
+       :ensure t
+       :config
+       (load-theme 'material 'no-confirm))
    #+end_src
    
 ** Smart mode line and powerline
@@ -271,7 +286,8 @@
        :config
        (remove-hook 'elpy-modules 'elpy-module-flymake)
        (remove-hook 'elpy-modules 'elpy-module-yasnippet)
-       (define-key elpy-mode-map (kbd "C-c C-n") 'elpy-shell-send-current-statement)
+       (define-key elpy-mode-map (kbd "C-c C-j") 'elpy-shell-send-statement)
+       (define-key elpy-mode-map (kbd "C-c C-n") 'elpy-shell-send-statement-and-step)
        (define-key elpy-mode-map (kbd "C-c C-v") 'elpy-doc)
        (elpy-enable))
     #+end_src
@@ -507,4 +523,24 @@
 (setq tramp-default-method "ssh")
    #+end_src
 
+** PDF tools
+#+begin_src emacs-lisp :tangle no
+(use-package pdf-tools
+ :pin manual ;; manually update
+ :config
+ ;; open pdfs scaled to fit page
+ (setq-default pdf-view-display-size 'fit-page)
+ ;; automatically annotate highlights
+ (setq pdf-annot-activate-created-annotations t)
+ ;; use normal isearch
+ (define-key pdf-view-mode-map (kbd "C-s") 'isearch-forward)
+ ;; turn off cua so copy works
+ (add-hook 'pdf-view-mode-hook (lambda () (cua-mode 0)))
+ ;; more fine-grained zooming
+ (setq pdf-view-resize-factor 1.1)
+ ;; keyboard shortcuts
+ (define-key pdf-view-mode-map (kbd "h") 'pdf-annot-add-highlight-markup-annotation)
+ (define-key pdf-view-mode-map (kbd "t") 'pdf-annot-add-text-annotation)
+ (define-key pdf-view-mode-map (kbd "D") 'pdf-annot-delete))
+#+end_src
 

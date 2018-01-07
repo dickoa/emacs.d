@@ -51,13 +51,13 @@
      (ess-fl-keyword:delimiters)
      (ess-fl-keyword:=)
      (ess-R-fl-keyword:F&T . t))))
- '(menu-bar-mode nil)
  '(org-export-backends (quote (ascii beamer html latex md odt org)))
  '(org-trello-current-prefix-keybinding "C-c o")
  '(package-selected-packages
    (quote
-    (toml-mode no-littering js3-mode indium adaptive-wrap ob-async ob-sql-mode eval-in-repl org-beautify-theme mu4e-alert org-alert all-the-icons-dired org-gcal org-gnome org-jira org-readme skewer-mode tabbar tabbar-ruler emmet-mode confluence org-trello org-plus-contrib volatile-highlights smart-tabs-mode smart-mode-line-powerline-theme ample-theme ob-ipython ein aggressive-indent neotree all-the-icons ivy-bibtex ivy-gitlab python-environment python-mode python-test python-x slack monroe gitlab use-package swiper stan-mode smartparens smart-mode-line scala-mode2 projectile powerline polymode ox-reveal ox-nikola ox-ioslide org-eww org-bullets ob-lisp moe-theme mode-icons markdown-mode magit ido-vertical-mode ido-ubiquitous htmlize hlinum grass-mode flymd eww-lnum ess ensime elpy cider biblio bbdb auto-complete-auctex auctex-latexmk 0blayout)))
- '(tool-bar-mode nil))
+    (csv-mode material-theme use-package toml-mode no-littering js3-mode indium adaptive-wrap ob-async ob-sql-mode eval-in-repl org-beautify-theme mu4e-alert org-alert all-the-icons-dired org-gcal org-gnome org-jira org-readme skewer-mode tabbar tabbar-ruler emmet-mode confluence org-trello org-plus-contrib volatile-highlights smart-tabs-mode smart-mode-line-powerline-theme ample-theme ob-ipython ein aggressive-indent neotree all-the-icons ivy-bibtex ivy-gitlab python-environment python-mode python-test python-x slack monroe gitlab swiper stan-mode smartparens smart-mode-line scala-mode2 projectile powerline polymode ox-reveal ox-nikola ox-ioslide org-eww org-bullets ob-lisp moe-theme mode-icons markdown-mode magit ido-vertical-mode ido-ubiquitous htmlize hlinum grass-mode flymd eww-lnum ess ensime elpy cider biblio bbdb auto-complete-auctex auctex-latexmk 0blayout)))
+ '(tool-bar-mode nil)
+ '(tramp-syntax (quote default) nil (tramp)))
 
 ;; (custom-set-faces
 ;;  ;; custom-set-faces was added by Custom.
@@ -70,4 +70,4 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(default ((t (:family "IBM Plex Mono" :foundry "IBM " :slant normal :weight bold :height 120 :width normal)))))
