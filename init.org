@@ -252,7 +252,7 @@
 		     (setq mode-require-final-newline nil)
 		     (setq mode-require-final-newline nil)))
 	 (add-hook 'ess-mode-hook 'projectile-mode)
-	 (add-hook 'ess-mode-hook 'flycheck-mode) ;; doesn't like flymake
+	 (add-hook 'ess-mode-hook 'flycheck-mode) ;; doesn't like flymakeP
 	 (add-hook 'ess-help-mode-hook '(lambda ()
 					  (when (string= ess-dialect "R")
 					    (poly-ess-help+r-mode))))
