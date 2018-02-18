@@ -59,6 +59,7 @@
     (add-to-list 'recentf-exclude no-littering-etc-directory))   
 #+end_src
 
+
 * Theme and visual aspect
 ** Remove all clutter
    #+BEGIN_SRC emacs-lisp :tangle yes
@@ -77,7 +78,8 @@
        :ensure t
        :config
        (setq moe-theme-highlight-buffer-id t)
-       (moe-light))
+       (moe-dark
+))
    #+end_src
 ** Smart mode line and powerline
 *** Linum 
@@ -150,7 +152,6 @@
 	(add-hook 'dired-mode-hook 'all-the-icons-dired-mode))                 
     #+end_src
 
-
 ** Neotree 
    #+begin_src emacs-lisp :tangle yes
      (use-package neotree                 
@@ -182,6 +183,11 @@
     :ensure t
     :init (ido-vertical-mode 1)))
    #+end_src
+
+** Brower
+#+begin_src emacs-lisp :tangle yes
+(setq browse-url-browser-function 'browse-url-chromium)
+#+end_src
 
 * Data science tools
 ** Clojure
@@ -234,25 +240,26 @@
        :init (require 'ess-site)                     
        :config
        (progn
-         (setq
-          inferior-ess-same-window nil       
-          ess-ask-for-ess-directory nil      ; don't ask wkd
-          inferior-R-args "--quiet --no-save" ; no save
-          ess-swv-processor (quote knitr)    ; Use knitr instead of Sweave as ESS processor
-          ess-default-style 'RStudio)
-         (setq prettify-symbols-alist '(("lambda" . 955)))
-         (add-hook 'ess-mode-hook
-                   (lambda ()
-                     (setq mode-require-final-newline nil)
-                     (setq mode-require-final-newline nil)))
-         (add-hook 'ess-mode-hook 'projectile-mode) 
-         (add-hook 'ess-help-mode-hook '(lambda ()
-                                          (when (string= ess-dialect "R")
-                                            (poly-ess-help+r-mode))))
-         (add-hook 'ess-R-post-run-hook 'smartparens-mode)
-         (add-hook 'iESS-mode-hook 'ansi-color-for-comint-mode-on)
+	 (setq
+	  inferior-ess-same-window nil       
+	  ess-ask-for-ess-directory nil      ; don't ask wkd
+	  inferior-R-args "--quiet --no-save" ; no save
+	  ess-swv-processor (quote knitr)    ; Use knitr instead of Sweave as ESS processor
+	  ess-default-style 'RStudio)
+	 (setq prettify-symbols-alist '(("lambda" . 955)))
+	 (add-hook 'ess-mode-hook
+		   (lambda ()
+		     (setq mode-require-final-newline nil)
+		     (setq mode-require-final-newline nil)))
+	 (add-hook 'ess-mode-hook 'projectile-mode)
+	 (add-hook 'ess-mode-hook 'flycheck-mode) ;; doesn't like flymake
+	 (add-hook 'ess-help-mode-hook '(lambda ()
+					  (when (string= ess-dialect "R")
+					    (poly-ess-help+r-mode))))
+	 (add-hook 'ess-R-post-run-hook 'smartparens-mode)
+	 (add-hook 'iESS-mode-hook 'ansi-color-for-comint-mode-on)
 	 ;; add pipe shortcut
-         (add-to-list 'comint-output-filter-functions 'ansi-color-process-output)))
+	 (add-to-list 'comint-output-filter-functions 'ansi-color-process-output)))
    #+end_src
 
 ** Python
@@ -381,20 +388,22 @@
 
 ** Polymode
    #+begin_src emacs-lisp :tangle yes
-  (use-package polymode           ; ESS with polymode
-    :ensure t                         ; https://github.com/vitoshka/polymode
-    :config
-    (progn
-      (require 'poly-R)               
-      (require 'poly-markdown)
-      (require 'poly-noweb)
-      ;; Add shortcut to add snippet ```{r} ```
-      (add-to-list 'auto-mode-alist '("\\.md" . poly-markdown-mode)) ; Markdown files
-      (add-to-list 'auto-mode-alist '("\\.Rmd" . poly-markdown+r-mode))
-      (add-to-list 'auto-mode-alist '("\\.Rpres" . poly-markdown+r-mode))
-      (add-to-list 'auto-mode-alist '("\\.Snw" . poly-noweb+r-mode)) ; Sweave files
-      (add-to-list 'auto-mode-alist '("\\.Rnw" . poly-noweb+r-mode)) ; Sweave files
-      (add-to-list 'auto-mode-alist '("\\.Rd" . poly-ess-help+r-mode))))
+     (use-package polymode           ; ESS with polymode
+       :ensure t                         ; https://github.com/vitoshka/polymode
+       :config
+       (progn
+	 (require 'poly-R)               
+	 (require 'poly-markdown)
+	 (require 'poly-noweb)
+	 ;; (setq polymode-exporter-output-file-format "%s")
+	 ;; Add shortcut to add snippet ```{r} ```
+	 (add-to-list 'auto-mode-alist '("\\.md" . poly-markdown-mode)) ; Markdown files
+	 (add-to-list 'auto-mode-alist '("\\.Rmd" . poly-markdown+r-mode))
+	 (add-to-list 'auto-mode-alist '("\\.Rmarkdown" . poly-markdown+r-mode))
+	 (add-to-list 'auto-mode-alist '("\\.Rpres" . poly-markdown+r-mode))
+	 (add-to-list 'auto-mode-alist '("\\.Snw" . poly-noweb+r-mode)) ; Sweave files
+	 (add-to-list 'auto-mode-alist '("\\.Rnw" . poly-noweb+r-mode)) ; Sweave files
+	 (add-to-list 'auto-mode-alist '("\\.Rd" . poly-ess-help+r-mode))))
    #+end_src
 
 * Other tools 
@@ -484,7 +493,6 @@
     (setq browse-url-browser-function 'eww-browse-url))
 
    #+end_src
-
 ** Tramp
    #+begin_src emacs-lisp :tangle yes
 (setq tramp-default-method "ssh")
@@ -510,4 +518,3 @@
  (define-key pdf-view-mode-map (kbd "t") 'pdf-annot-add-text-annotation)
  (define-key pdf-view-mode-map (kbd "D") 'pdf-annot-delete))
 #+end_src
-
