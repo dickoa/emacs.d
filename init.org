@@ -77,8 +77,7 @@
        :ensure t
        :config
        (setq moe-theme-highlight-buffer-id t)
-       (moe-dark
-))
+       (moe-light))
    #+end_src
 ** Smart mode line and powerline
 *** Linum 
@@ -119,7 +118,6 @@
   :config
   (powerline-moe-theme))
     #+end_src
-
 ** Smartparens
    #+begin_src emacs-lisp :tangle yes
 (use-package smartparens-config
@@ -202,15 +200,6 @@
        :ensure t
        :config
        (setq treemacs-header-function #'treemacs-projectile-create-header))
-   #+end_src
-
-** Neotree 
-   #+begin_src emacs-lisp :tangle no
-     (use-package neotree                 
-      :config
-      (progn
-      (global-set-key [f8] 'neotree-toggle)
-      (setq neo-theme (if (display-graphic-p) 'icons 'arrow))))
    #+end_src
 
 ** Autocomplete
@@ -326,31 +315,39 @@
 
 ** ESS (R, Julia)
    #+begin_src emacs-lisp :tangle yes
-     (use-package ess
-       :ensure t                             
-       :init (require 'ess-site)                     
-       :config
-       (progn
-	 (setq
-	  inferior-ess-same-window nil       
-	  ess-ask-for-ess-directory nil      ; don't ask wkd
-	  inferior-R-args "--quiet --no-save" ; no save
-	  ess-swv-processor (quote knitr)    ; Use knitr instead of Sweave as ESS processor
-	  ess-default-style 'RStudio)
-	 (setq prettify-symbols-alist '(("lambda" . 955)))
-	 (add-hook 'ess-mode-hook
-		   (lambda ()
-		     (setq mode-require-final-newline nil)
-		     (setq mode-require-final-newline nil)))
-	 ;; (add-hook 'ess-mode-hook 'projectile-mode)
-	 (add-hook 'ess-mode-hook 'flycheck-mode) ;; doesn't like flymakeP
-	 (add-hook 'ess-help-mode-hook '(lambda ()
-					  (when (string= ess-dialect "R")
-					    (poly-ess-help+r-mode))))
-	 (add-hook 'ess-R-post-run-hook 'smartparens-mode)
-	 (add-hook 'iESS-mode-hook 'ansi-color-for-comint-mode-on)
-	 ;; add pipe shortcut
-	 (add-to-list 'comint-output-filter-functions 'ansi-color-process-output)))
+     (defun my-ess-ac-hook ()
+       (ivy-mode -1)
+       (ido-mode 1)
+       (setq ido-enable-flex-matching t)
+       (ido-vertical-mode 1)
+       (auto-complete-mode 1))
+
+	(use-package ess
+	  :ensure t                             
+	  :init (require 'ess-site)                     
+	  :config
+	  (progn
+	    (setq
+	     inferior-ess-same-window nil       
+	     ess-ask-for-ess-directory nil      ; don't ask wkd
+	     inferior-R-args "--quiet --no-save" ; no save
+	     ess-swv-processor (quote knitr)    ; Use knitr instead of Sweave as ESS processor
+	     ess-use-ido t
+	     ess-default-style 'RStudio)
+	    (setq prettify-symbols-alist '(("lambda" . 955)))
+	    (add-hook 'ess-mode-hook
+		      (lambda ()
+			(setq mode-require-final-newline nil)
+			(setq mode-require-final-newline nil)))
+	    (add-hook 'ess-mode-hook 'flycheck-mode)
+	    (add-hook 'ess-mode-hook 'my-ess-ac-hook)
+	    (add-hook 'iESS-mode-hook 'my-ess-ac-hook)
+	    (add-hook 'ess-help-mode-hook '(lambda ()
+					     (when (string= ess-dialect "R")
+					       (poly-ess-help+r-mode))))
+	    (add-hook 'ess-R-post-run-hook 'smartparens-mode)
+	    (add-hook 'iESS-mode-hook 'ansi-color-for-comint-mode-on)
+	    (add-to-list 'comint-output-filter-functions 'ansi-color-process-output)))
    #+end_src
 
 ** Python
