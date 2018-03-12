@@ -522,57 +522,60 @@
      (use-package mu4e
        :init
        (progn
-         (use-package mu4e-contrib)
-         (use-package gnus-dired)
-         (use-package smtpmail)
-         (setq mu4e-maildir "~/.mail/gmail")
-         (setq mu4e-drafts-folder "/Drafts")
-         (setq mu4e-sent-folder   "/Sent")
-         (setq mu4e-trash-folder  "/Trash")
-         (setq mu4e-maildir-shortcuts
-               '( ("/Inbox"             . ?i)
-                  ("/Sent"              . ?s)
-                  ("/Drafts"            . ?d)
-                  ("/Trash"             . ?t)))
-         (setq mu4e-change-filenames-when-moving t)
-         (setq mu4e-get-mail-command "mbsync -a")
-         (setq mu4e-show-images t)
-         (setq mu4e-html2text-command 'mu4e-shr2text)
-         (setq mu4e-update-interval 900)
-         (setq mu4e-attachment-dir "~/Downloads")
-         (setq
-          mu4e-reply-to-address "dicko.ahmadou@gmail.com"
-          user-mail-address "dicko.ahmadou@gmail.com"
-          user-full-name  "Ahmadou H. Dicko"
-          mu4e-compose-signature
-          (concat
-           "Ahmadou H. Dicko, PhD\n"
-           "Statistical consultant\n"
-           "Stat4D\n"))
-           ;;send mail using postfix
-           ;; (setq send-mail-function 'sendmail-send-it)
-           ;; (setq message-send-mail-function 'message-send-mail-with-sendmail)
-           (setq message-send-mail-function 'smtpmail-send-it
-           smtpmail-stream-type 'starttls
-           smtpmail-default-smtp-server "smtp.gmail.com"
-           smtpmail-smtp-server "smtp.gmail.com"
-           smtpmail-smtp-service 587)
-         (setq message-kill-buffer-on-exit t)
-         (setq mu4e-confirm-quit nil)
-         ;; make the `gnus-dired-mail-buffers' function also work on
-         ;; message-mode derived modes, such as mu4e-compose-mode
-         (defun gnus-dired-mail-buffers ()
-           "Return a list of active message buffers."
-           (let (buffers)
-         (save-current-buffer
-           (dolist (buffer (buffer-list t))
-             (set-buffer buffer)
-             (when (and (derived-mode-p 'message-mode)
-                        (null message-sent-message-via))
-               (push (buffer-name buffer) buffers))))
-         (nreverse buffers)))
-         (setq gnus-dired-mail-mode 'mu4e-user-agent)
-         (add-hook 'dired-mode-hook 'turn-on-gnus-dired-mode)))
+	 (use-package mu4e-contrib)
+	 (use-package gnus-dired)
+	 (use-package smtpmail)
+	 (setq mu4e-maildir "~/.mail/gmail")
+	 (setq mu4e-drafts-folder "/Drafts")
+	 (setq mu4e-sent-folder   "/Sent")
+	 (setq mu4e-trash-folder  "/Trash")
+	 (setq mu4e-maildir-shortcuts
+	       '( ("/Inbox"             . ?i)
+		  ("/Sent"              . ?s)
+		  ("/Drafts"            . ?d)
+		  ("/Trash"             . ?t)))
+	 (setq mu4e-change-filenames-when-moving t)
+	 (setq mu4e-get-mail-command "mbsync -a")
+	 (setq mu4e-show-images t)
+	 (setq mu4e-html2text-command "w3m -dump -T text/html -cols 72 -o display_link_number=true -o auto_image=false -o display_image=false -o ignore_null_img_alt=true")
+	 (setq mu4e-headers-date-format "%d/%m/%Y")
+	 (setq mu4e-headers-time-format "%H:%M")
+      ;; thread prefix marks)
+	 (setq mu4e-update-interval 900)
+	 (setq mu4e-attachment-dir "~/Downloads")
+	 (setq
+	  mu4e-reply-to-address "dicko.ahmadou@gmail.com"
+	  user-mail-address "dicko.ahmadou@gmail.com"
+	  user-full-name  "Ahmadou H. Dicko"
+	  mu4e-compose-signature
+	  (concat
+	   "Ahmadou H. Dicko, PhD\n"
+	   "Statistical consultant\n"
+	   "Stat4D\n"))
+	   ;;send mail using postfix
+	   ;; (setq send-mail-function 'sendmail-send-it)
+	   ;; (setq message-send-mail-function 'message-send-mail-with-sendmail)
+	   (setq message-send-mail-function 'smtpmail-send-it
+	   smtpmail-stream-type 'starttls
+	   smtpmail-default-smtp-server "smtp.gmail.com"
+	   smtpmail-smtp-server "smtp.gmail.com"
+	   smtpmail-smtp-service 587)
+	 (setq message-kill-buffer-on-exit t)
+	 (setq mu4e-confirm-quit nil)
+	 ;; make the `gnus-dired-mail-buffers' function also work on
+	 ;; message-mode derived modes, such as mu4e-compose-mode
+	 (defun gnus-dired-mail-buffers ()
+	   "Return a list of active message buffers."
+	   (let (buffers)
+	 (save-current-buffer
+	   (dolist (buffer (buffer-list t))
+	     (set-buffer buffer)
+	     (when (and (derived-mode-p 'message-mode)
+			(null message-sent-message-via))
+	       (push (buffer-name buffer) buffers))))
+	 (nreverse buffers)))
+	 (setq gnus-dired-mail-mode 'mu4e-user-agent)
+	 (add-hook 'dired-mode-hook 'turn-on-gnus-dired-mode)))
    #+end_src
 
 ** Eww
