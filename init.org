@@ -373,9 +373,66 @@
     #+end_src
 
 ** Javascript
-    #+begin_src emacs-lisp :tangle no
-(use-package indium)
+*** Js2
+    #+begin_src emacs-lisp :tangle yes
+(use-package js2-mode
+  :mode
+  (("\\.js$" . js2-mode)
+   ("\\.jsx$" . js2-jsx-mode))
+  :hook ((js2-mode . (lambda ()
+                       (js2-imenu-extras-mode)
+                       (flycheck-mode))))
+  :config
+  ;; have 2 space indentation by default
+  (setq-default js-indent-level 2)
+  (setq-default js2-basic-offset 2)
+
+  ;; use eslint_d insetad of eslint for faster linting
+  (when (executable-find "eslint_d")
+    (setq flycheck-javascript-eslint-executable "eslint_d"))
+
+  ;; turn off all warnings in js2-mode
+  (setq js2-mode-show-parse-errors t)
+  (setq js2-mode-show-strict-warnings nil))
+#+end_src
+
+*** Company tern
+    #+begin_src emacs-lisp :tangle yes
+;; company-tern: company backend for tern
+;; http://ternjs.net/doc/manual.html#emacs
+(use-package company-tern
+  :after tern
+  :if (executable-find "tern"))
     #+end_src
+
+*** Prettier-js
+    #+begin_src emacs-lisp :tangle yes
+(use-package prettier-js
+  :if (executable-find "prettier")
+  :hook ((js2-mode . prettier-js-mode)))
+    #+end_src
+
+*** Indium
+    #+begin_src emacs-lisp :tangle yes
+(use-package indium
+  :after js2-mode
+  :bind (:map js2-mode-map
+              ("C-c C-l" . indium-eval-buffer))
+  :hook ((js2-mode . indium-interaction-mode)))
+    #+end_src
+
+*** JSON
+    #+begin_src emacs-lisp :tangle yes
+(use-package json-mode
+  :hook ((json-mode . prettier-js-mode)))
+    #+end_src
+
+** Cpp 
+*** Cpp font
+#+begin_src emacs-lisp :tangle yes
+(use-package modern-cpp-font-lock
+  :ensure t)
+#+end_src
 
 * Literal programming tools
 ** Org-mode
