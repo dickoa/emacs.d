@@ -644,7 +644,6 @@
               (define-key eww-mode-map "F" 'eww-lnum-universal)))
     :config
     (setq browse-url-browser-function 'eww-browse-url))
-
    #+end_src
 ** Tramp
    #+begin_src emacs-lisp :tangle yes
