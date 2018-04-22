@@ -37,7 +37,6 @@
 (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
 (add-to-list 'package-archives
              '("elpy" . "http://jorgenschaefer.github.io/packages/"))
-(package-initialize)
    #+end_src
 
 ** Use package
@@ -77,7 +76,7 @@
        :ensure t
        :config
        (setq moe-theme-highlight-buffer-id t)
-       (moe-light))
+       (moe-dark))
    #+end_src
 ** Smart mode line and powerline
 *** Linum 
