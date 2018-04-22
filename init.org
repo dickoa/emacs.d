@@ -613,8 +613,8 @@
 	   ;; (setq message-send-mail-function 'message-send-mail-with-sendmail)
 	   (setq message-send-mail-function 'smtpmail-send-it
 	   smtpmail-stream-type 'starttls
-	   smtpmail-default-smtp-server "smtp.gmail.com"
-	   smtpmail-smtp-server "smtp.gmail.com"
+	   smtpmail-default-smtp-server "protonmail"
+	   smtpmail-smtp-server "protonmail"
 	   smtpmail-smtp-service 587)
 	 (setq message-kill-buffer-on-exit t)
 	 (setq mu4e-confirm-quit nil)
