@@ -600,8 +600,8 @@
 	 (setq mu4e-update-interval 900)
 	 (setq mu4e-attachment-dir "~/Downloads")
 	 (setq
-	  mu4e-reply-to-address "dicko.ahmadou@gmail.com"
-	  user-mail-address "dicko.ahmadou@gmail.com"
+	  mu4e-reply-to-address "mail@ahmadoudicko.com"
+	  user-mail-address "mail@ahmadoudicko.com"
 	  user-full-name  "Ahmadou H. Dicko"
 	  mu4e-compose-signature
 	  (concat
