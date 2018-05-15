@@ -17,6 +17,14 @@
      (ess-fl-keyword:delimiters)
      (ess-fl-keyword:=)
      (ess-R-fl-keyword:F&T . t)))
+ '(ess-roxy-str "#'")
+ '(ess-roxy-template-alist
+   '(("description" . ".. content for \\description{} (no empty lines) ..")
+     ("details" . ".. content for \\details{} ..")
+     ("param" . "")
+     ("return" . "")
+     ("author" . "Ahmadou H. Dicko")
+     ("export" . "")))
  '(inferior-R-font-lock-keywords
    '((ess-S-fl-keyword:prompt . t)
      (ess-R-fl-keyword:messages . t)

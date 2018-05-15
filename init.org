@@ -321,32 +321,42 @@
        (ido-vertical-mode 1)
        (auto-complete-mode 1))
 
-	(use-package ess
-	  :ensure t                             
-	  :init (require 'ess-site)                     
-	  :config
-	  (progn
-	    (setq
-	     inferior-ess-same-window nil       
-	     ess-ask-for-ess-directory nil      ; don't ask wkd
-	     inferior-R-args "--quiet --no-save" ; no save
-	     ess-swv-processor (quote knitr)    ; Use knitr instead of Sweave as ESS processor
-	     ess-use-ido t
-	     ess-default-style 'RStudio)
-	    (setq prettify-symbols-alist '(("lambda" . 955)))
-	    (add-hook 'ess-mode-hook
-		      (lambda ()
-			(setq mode-require-final-newline nil)
-			(setq mode-require-final-newline nil)))
-	    (add-hook 'ess-mode-hook 'flycheck-mode)
-	    (add-hook 'ess-mode-hook 'my-ess-ac-hook)
-	    (add-hook 'iESS-mode-hook 'my-ess-ac-hook)
-	    (add-hook 'ess-help-mode-hook '(lambda ()
-					     (when (string= ess-dialect "R")
-					       (poly-ess-help+r-mode))))
-	    (add-hook 'ess-R-post-run-hook 'smartparens-mode)
-	    (add-hook 'iESS-mode-hook 'ansi-color-for-comint-mode-on)
-	    (add-to-list 'comint-output-filter-functions 'ansi-color-process-output)))
+     (defun R_pipe ()
+       "R - %>% operator"
+       (interactive)
+       (just-one-space 1)
+       (insert "%>%")
+       (reindent-then-newline-and-indent))
+
+
+     (use-package ess
+       :ensure t                             
+       :init (require 'ess-site)                     
+       :config
+       (progn
+	 (setq
+	  inferior-ess-same-window nil       
+	  ess-ask-for-ess-directory nil      ; don't ask wkd
+	  inferior-R-args "--quiet --no-save" ; no save
+	  ess-swv-processor (quote knitr)    ; Use knitr instead of Sweave as ESS processor
+	  ess-use-ido t
+	  ess-default-style 'RStudio)
+	 (setq prettify-symbols-alist '(("lambda" . 955)))
+	 (add-hook 'ess-mode-hook
+		   (lambda ()
+		     (setq mode-require-final-newline nil)
+		     (setq mode-require-final-newline nil)))
+	 (define-key ess-mode-map (kbd "M-%") 'R_pipe)
+	 (define-key inferior-ess-mode-map (kbd "M-%") 'R_pipe)
+	 (add-hook 'ess-mode-hook 'flycheck-mode)
+	 (add-hook 'ess-mode-hook 'my-ess-ac-hook)
+	 (add-hook 'iESS-mode-hook 'my-ess-ac-hook)
+	 (add-hook 'ess-help-mode-hook '(lambda ()
+					  (when (string= ess-dialect "R")
+					    (poly-ess-help+r-mode))))
+	 (add-hook 'ess-R-post-run-hook 'smartparens-mode)
+	 (add-hook 'iESS-mode-hook 'ansi-color-for-comint-mode-on)
+	 (add-to-list 'comint-output-filter-functions 'ansi-color-process-output)))
    #+end_src
 
 ** Python
