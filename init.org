@@ -7,7 +7,7 @@
 
    #+begin_src emacs-lisp :tangle yes
 (setq user-full-name "Ahmadou H. Dicko"
-      user-mail-address "dicko.ahmadou at gmail dot com")
+      user-mail-address "mail at ahmadoudicko dot com")
    #+end_src
 
 ** Customized stuff
@@ -18,7 +18,9 @@
 
 ** Add custom lisp path
    #+BEGIN_SRC emacs-lisp :tangle yes
-(add-to-list 'load-path "~/.emacs.d/lisp")
+     (add-to-list 'load-path "~/.emacs.d/lisp")
+     ;; (add-to-list 'load-path "~/.emacs.d/lisp/polymode")
+     ;; (add-to-list 'load-path "~/.emacs.d/lisp/polymode/modes")
    #+end_src
 
 ** Some useful shortcut
@@ -30,13 +32,13 @@
 
 ** Add package sources
    #+begin_src emacs-lisp :tangle yes
-   (require 'package)
-(setq package-enable-at-startup nil)
-(add-to-list 'package-archives
-             '("melpa" . "http://melpa.milkbox.net/packages/") t)
-(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
-(add-to-list 'package-archives
-             '("elpy" . "http://jorgenschaefer.github.io/packages/"))
+     (require 'package)
+     (setq package-enable-at-startup nil)
+     (add-to-list 'package-archives
+                  '("melpa" . "http://melpa.milkbox.net/packages/") t)
+     (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
+     (add-to-list 'package-archives
+                  '("elpy" . "http://jorgenschaefer.github.io/packages/"))
    #+end_src
 
 ** Use package
@@ -96,7 +98,7 @@
     #+end_src
 
 *** Smart mode line
-    #+begin_src emacs-lisp :tangle no
+    #+begin_src emacs-lisp :tangle yes
 (use-package smart-mode-line
   :ensure t
   :defer t
@@ -312,7 +314,8 @@
 (add-hook 'scala-mode-hook 'ensime-mode)
     #+end_src
 
-** ESS (R, Julia)
+** 
+ESS (R, Julia)
    #+begin_src emacs-lisp :tangle yes
      (defun my-ess-ac-hook ()
        (ivy-mode -1)
@@ -326,34 +329,39 @@
        (interactive)
        (just-one-space 1)
        (insert "%>%")
-       (reindent-then-newline-and-indent))
+       (ess-newline-and-indent))
 
 
      (use-package ess
-       :ensure t                             
-       :init (require 'ess-site)                     
+       :ensure t
+       :defer t
+       :init
+       (require 'ess-site)
+       (require 'ess-view)
        :config
        (progn
 	 (setq
 	  inferior-ess-same-window nil       
 	  ess-ask-for-ess-directory nil      ; don't ask wkd
-	  inferior-R-args "--quiet --no-save" ; no save
-	  ess-swv-processor (quote knitr)    ; Use knitr instead of Sweave as ESS processor
+	  inferior-R-args "--no-restore-history --no-restore --quiet --no-save" ; no save
 	  ess-use-ido t
+	  ess-nuke-trailing-whitespace t
+	  ess-roxy-fontify-examples t
 	  ess-default-style 'RStudio)
 	 (setq prettify-symbols-alist '(("lambda" . 955)))
 	 (add-hook 'ess-mode-hook
 		   (lambda ()
-		     (setq mode-require-final-newline nil)
 		     (setq mode-require-final-newline nil)))
 	 (define-key ess-mode-map (kbd "M-%") 'R_pipe)
 	 (define-key inferior-ess-mode-map (kbd "M-%") 'R_pipe)
+	 (define-key ess-r-mode-map "_" #'ess-insert-assign)
+	 (define-key inferior-ess-r-mode-map "_" #'ess-insert-assign)
 	 (add-hook 'ess-mode-hook 'flycheck-mode)
 	 (add-hook 'ess-mode-hook 'my-ess-ac-hook)
 	 (add-hook 'iESS-mode-hook 'my-ess-ac-hook)
-	 (add-hook 'ess-help-mode-hook '(lambda ()
-					  (when (string= ess-dialect "R")
-					    (poly-ess-help+r-mode))))
+	 ;; (add-hook 'ess-help-mode-hook '(lambda ()
+	 ;; 				     (when (string= ess-dialect "R")
+	 ;; 				       (poly-ess-help+r-mode))))
 	 (add-hook 'ess-R-post-run-hook 'smartparens-mode)
 	 (add-hook 'iESS-mode-hook 'ansi-color-for-comint-mode-on)
 	 (add-to-list 'comint-output-filter-functions 'ansi-color-process-output)))
@@ -413,6 +421,8 @@
   :after tern
   :if (executable-find "tern"))
     #+end_src
+
+    #+RESULTS:
 
 *** Prettier-js
     #+begin_src emacs-lisp :tangle yes
@@ -492,7 +502,7 @@
    #+end_src
 
 *** Org reveal
-    #+begin_src emacs-lisp :tangle yes
+    #+begin_src emacs-lisp :tangle no
       (require 'ox-reveal)
     #+end_src
 
@@ -542,22 +552,43 @@
 
 ** Polymode
    #+begin_src emacs-lisp :tangle yes
-     (use-package polymode           ; ESS with polymode
-       :ensure t                         ; https://github.com/vitoshka/polymode
-       :config
-       (progn
-	 (require 'poly-R)               
-	 (require 'poly-markdown)
-	 (require 'poly-noweb)
-	 ;; (setq polymode-exporter-output-file-format "%s")
-	 ;; Add shortcut to add snippet ```{r} ```
-	 (add-to-list 'auto-mode-alist '("\\.md" . poly-markdown-mode)) ; Markdown files
-	 (add-to-list 'auto-mode-alist '("\\.Rmd" . poly-markdown+r-mode))
-	 (add-to-list 'auto-mode-alist '("\\.Rmarkdown" . poly-markdown+r-mode))
-	 (add-to-list 'auto-mode-alist '("\\.Rpres" . poly-markdown+r-mode))
-	 (add-to-list 'auto-mode-alist '("\\.Snw" . poly-noweb+r-mode)) ; Sweave files
-	 (add-to-list 'auto-mode-alist '("\\.Rnw" . poly-noweb+r-mode)) ; Sweave files
-	 (add-to-list 'auto-mode-alist '("\\.Rd" . poly-ess-help+r-mode))))
+     (use-package poly-markdown
+       :ensure t)
+
+     (use-package poly-R
+       :ensure t)
+
+     (use-package poly-org
+       :ensure t)
+
+     (use-package poly-noweb
+       :ensure t)
+
+     ;; (use-package polymode           ; ESS with polymode
+     ;;   :ensure t                         ; https://github.com/vitoshka/polymode
+     ;;   :config
+     ;;   (progn
+     ;; (require 'poly-markdown)
+     ;; (require 'poly-noweb)
+     ;; (setq polymode-exporter-output-file-format "%s")
+     ;; Add shortcut to add snippet ```{r} ```
+     ;; 	 (add-to-list 'auto-mode-alist '("\\.md" . poly-markdown-mode)) ; Markdown files
+     ;; 	 (add-to-list 'auto-mode-alist '("\\.Rmd" . poly-markdown+r-mode))
+     ;; 	 (add-to-list 'auto-mode-alist '("\\.Rmarkdown" . poly-markdown+r-mode))
+     ;; 	 (add-to-list 'auto-mode-alist '("\\.Rpres" . poly-markdown+r-mode))
+     ;; 	 (add-to-list 'auto-mode-alist '("\\.Snw" . poly-noweb+r-mode)) ; Sweave files
+     ;; 	 (add-to-list 'auto-mode-alist '("\\.Rnw" . poly-noweb+r-mode)) ; Sweave files
+     ;; 	 (add-to-list 'auto-mode-alist '("\\.Rd" . poly-ess-help+r-mode))
+     ;; ))
+     ;;      ;; (require 'poly-R)
+     ;; (require 'poly-markdown)
+     ;; (add-to-list 'auto-mode-alist '("\\.md" . poly-markdown-mode)) ; Markdown files
+     ;; (add-to-list 'auto-mode-alist '("\\.Rmd" . poly-markdown+r-mode))
+     ;; (add-to-list 'auto-mode-alist '("\\.Rmarkdown" . poly-markdown+r-mode))
+     ;; (add-to-list 'auto-mode-alist '("\\.Rpres" . poly-markdown+r-mode))
+     ;; (add-to-list 'auto-mode-alist '("\\.Snw" . poly-noweb+r-mode)) ; Sweave files
+     ;; (add-to-list 'auto-mode-alist '("\\.Rnw" . poly-noweb+r-mode)) ; Sweave files
+     ;; (add-to-list 'auto-mode-alist '("\\.Rd" . poly-ess-help+r-mode))
    #+end_src
 
 * Other tools 
@@ -577,10 +608,10 @@
        :config
        (projectile-global-mode))
 
-     (use-package counsel-projectile
-       :ensure t
-       :config
-       (counsel-projectile-mode))
+     ;; (use-package counsel-projectile
+     ;;   :ensure t
+     ;;   :config
+     ;;   (counsel-projectile-mode))
    #+end_src
 
 ** Mu4e
@@ -664,21 +695,32 @@
 
 ** PDF tools
 #+begin_src emacs-lisp :tangle no
-(use-package pdf-tools
- :pin manual ;; manually update
- :config
- ;; open pdfs scaled to fit page
- (setq-default pdf-view-display-size 'fit-page)
- ;; automatically annotate highlights
- (setq pdf-annot-activate-created-annotations t)
- ;; use normal isearch
- (define-key pdf-view-mode-map (kbd "C-s") 'isearch-forward)
- ;; turn off cua so copy works
- (add-hook 'pdf-view-mode-hook (lambda () (cua-mode 0)))
- ;; more fine-grained zooming
- (setq pdf-view-resize-factor 1.1)
- ;; keyboard shortcuts
- (define-key pdf-view-mode-map (kbd "h") 'pdf-annot-add-highlight-markup-annotation)
- (define-key pdf-view-mode-map (kbd "t") 'pdf-annot-add-text-annotation)
- (define-key pdf-view-mode-map (kbd "D") 'pdf-annot-delete))
+  (use-package pdf-tools
+   :pin manual ;; manually update
+   :config
+   ;; open pdfs scaled to fit page
+   (setq-default pdf-view-display-size 'fit-page)
+   ;; automatically annotate highlights
+   (setq pdf-annot-activate-created-annotations t)
+   ;; use normal isearch
+   (define-key pdf-view-mode-map (kbd "C-s") 'isearch-forward)
+   ;; turn off cua so copy works
+   (add-hook 'pdf-view-mode-hook (lambda () (cua-mode 0)))
+   ;; Open pdf
+   (add-to-list 'auto-mode-alist (cons "\\.pdf$" 'pdf-view-mode))
+   ;; more fine-grained zooming
+   (setq pdf-view-resize-factor 1.1)
+   ;; keyboard shortcuts
+   (define-key pdf-view-mode-map (kbd "h") 'pdf-annot-add-highlight-markup-annotation)
+   (define-key pdf-view-mode-map (kbd "t") 'pdf-annot-add-text-annotation)
+   (define-key pdf-view-mode-map (kbd "D") 'pdf-annot-delete))
+#+end_src
+
+
+#+begin_src emacs-lisp :tangle yes
+  (use-package openwith
+    :ensure t
+    :config
+    (openwith-mode t)
+    (setq openwith-associations '(("\\.pdf\\'" "evince" (file)))))
 #+end_src
