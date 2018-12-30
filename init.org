@@ -48,17 +48,17 @@
        (package-refresh-contents)
        (package-install 'use-package))
      (require 'use-package)
-  #+end_src
+   #+end_src
 
 ** Clean .emacs.d
-#+begin_src emacs-lisp :tangle no
+   #+begin_src emacs-lisp :tangle no
   (use-package no-littering               ; Keep .emacs.d clean
     :ensure t
     :config
     (require 'recentf)
     (add-to-list 'recentf-exclude no-littering-var-directory)
     (add-to-list 'recentf-exclude no-littering-etc-directory))   
-#+end_src
+   #+end_src
 
 * Theme and visual aspect
 ** Remove all clutter
@@ -144,10 +144,21 @@
 *** All-the-icons
     #+begin_src emacs-lisp :tangle yes
       (use-package all-the-icons
-        :config
-        (setq all-the-icons-color-icons t)
-        (setq all-the-icons-for-buffer t)
+	:ensure t
+	:config
+	(setq all-the-icons-color-icons t)
+	(setq all-the-icons-for-buffer t))                 
+
+      (use-package all-the-icons-dired
+	:ensure t
+	:config
 	(add-hook 'dired-mode-hook 'all-the-icons-dired-mode))                 
+
+
+      (use-package all-the-icons-ivy
+	:ensure t
+	:config
+	(all-the-icons-ivy-setup))
     #+end_src
 
 ** Treemacs
@@ -253,7 +264,7 @@
    #+end_src
 
 ** Eshell
-#+begin_src emacs-lisp :tangle no
+   #+begin_src emacs-lisp :tangle yes
   (use-package xterm-color
     :init (require 'eshell)                     
     :config
@@ -261,14 +272,15 @@
     ;; (add-hook 'eshell-before-prompt-hook
     ;; 	    (lambda ()
     ;; 	      (setq xterm-color-preserve-properties t)))
+    ;; (setenv "TERM" "xterm-256color")
     (add-to-list 'eshell-preoutput-filter-functions 'xterm-color-filter)
     (setq eshell-output-filter-functions (remove 'eshell-handle-ansi-color eshell-output-filter-functions)))
    #+end_src
 
 ** Browser
-#+begin_src emacs-lisp :tangle yes
+   #+begin_src emacs-lisp :tangle yes
 (setq browse-url-browser-function 'browse-url-chromium)
-#+end_src
+   #+end_src
 
 * Data science tools
 ** Clojure
@@ -314,8 +326,8 @@
 (add-hook 'scala-mode-hook 'ensime-mode)
     #+end_src
 
-** 
-ESS (R, Julia)
+** ESS
+   ESS (R, Julia)
    #+begin_src emacs-lisp :tangle yes
      (defun my-ess-ac-hook ()
        (ivy-mode -1)
@@ -338,6 +350,7 @@ ESS (R, Julia)
        :init
        (require 'ess-site)
        (require 'ess-view)
+       (require 'poly-R)
        :config
        (progn
 	 (setq
@@ -361,7 +374,7 @@ ESS (R, Julia)
 	 (add-hook 'iESS-mode-hook 'my-ess-ac-hook)
 	 ;; (add-hook 'ess-help-mode-hook '(lambda ()
 	 ;; 				     (when (string= ess-dialect "R")
-	 ;; 				       (poly-ess-help+r-mode))))
+	 ;; 				       (poly-ess-help+R-mode))))
 	 (add-hook 'ess-R-post-run-hook 'smartparens-mode)
 	 (add-hook 'iESS-mode-hook 'ansi-color-for-comint-mode-on)
 	 (add-to-list 'comint-output-filter-functions 'ansi-color-process-output)))
@@ -411,7 +424,7 @@ ESS (R, Julia)
   ;; turn off all warnings in js2-mode
   (setq js2-mode-show-parse-errors t)
   (setq js2-mode-show-strict-warnings nil))
-#+end_src
+    #+end_src
 
 *** Company tern
     #+begin_src emacs-lisp :tangle yes
@@ -448,10 +461,15 @@ ESS (R, Julia)
 
 ** Cpp 
 *** Cpp font
-#+begin_src emacs-lisp :tangle yes
+    #+begin_src emacs-lisp :tangle yes
 (use-package modern-cpp-font-lock
   :ensure t)
-#+end_src
+    #+end_src
+** Stan
+
+    #+begin_src emacs-lisp :tangle yes
+(use-package stan-mode :load-path "~/.emacs.d/lisp/stan-mode")
+    #+end_src
 
 * Literal programming tools
 ** Org-mode
@@ -552,43 +570,21 @@ ESS (R, Julia)
 
 ** Polymode
    #+begin_src emacs-lisp :tangle yes
-     (use-package poly-markdown
-       :ensure t)
-
-     (use-package poly-R
-       :ensure t)
-
-     (use-package poly-org
-       :ensure t)
-
-     (use-package poly-noweb
-       :ensure t)
-
-     ;; (use-package polymode           ; ESS with polymode
-     ;;   :ensure t                         ; https://github.com/vitoshka/polymode
-     ;;   :config
-     ;;   (progn
-     ;; (require 'poly-markdown)
-     ;; (require 'poly-noweb)
-     ;; (setq polymode-exporter-output-file-format "%s")
-     ;; Add shortcut to add snippet ```{r} ```
-     ;; 	 (add-to-list 'auto-mode-alist '("\\.md" . poly-markdown-mode)) ; Markdown files
-     ;; 	 (add-to-list 'auto-mode-alist '("\\.Rmd" . poly-markdown+r-mode))
-     ;; 	 (add-to-list 'auto-mode-alist '("\\.Rmarkdown" . poly-markdown+r-mode))
-     ;; 	 (add-to-list 'auto-mode-alist '("\\.Rpres" . poly-markdown+r-mode))
-     ;; 	 (add-to-list 'auto-mode-alist '("\\.Snw" . poly-noweb+r-mode)) ; Sweave files
-     ;; 	 (add-to-list 'auto-mode-alist '("\\.Rnw" . poly-noweb+r-mode)) ; Sweave files
-     ;; 	 (add-to-list 'auto-mode-alist '("\\.Rd" . poly-ess-help+r-mode))
-     ;; ))
-     ;;      ;; (require 'poly-R)
-     ;; (require 'poly-markdown)
-     ;; (add-to-list 'auto-mode-alist '("\\.md" . poly-markdown-mode)) ; Markdown files
-     ;; (add-to-list 'auto-mode-alist '("\\.Rmd" . poly-markdown+r-mode))
-     ;; (add-to-list 'auto-mode-alist '("\\.Rmarkdown" . poly-markdown+r-mode))
-     ;; (add-to-list 'auto-mode-alist '("\\.Rpres" . poly-markdown+r-mode))
-     ;; (add-to-list 'auto-mode-alist '("\\.Snw" . poly-noweb+r-mode)) ; Sweave files
-     ;; (add-to-list 'auto-mode-alist '("\\.Rnw" . poly-noweb+r-mode)) ; Sweave files
-     ;; (add-to-list 'auto-mode-alist '("\\.Rd" . poly-ess-help+r-mode))
+     (use-package polymode           ; ESS with polymode
+       :ensure t                         ; https://github.com/vitoshka/polymode
+       :init
+       (require 'poly-R)
+       (require 'poly-markdown)
+       (require 'poly-noweb)
+       (require 'poly-org)
+       :config
+       (add-to-list 'auto-mode-alist '("\\.md" . poly-markdown-mode)) ; Markdown files
+       (add-to-list 'auto-mode-alist '("\\.Rmd" . poly-markdown+r-mode))
+       (add-to-list 'auto-mode-alist '("\\.Rmarkdown" . poly-markdown+r-mode))
+       (add-to-list 'auto-mode-alist '("\\.Rpres" . poly-markdown+r-mode))
+       (add-to-list 'auto-mode-alist '("\\.Rnw" . poly-noweb+r-mode)) ; Sweave files
+       (add-to-list 'auto-mode-alist '("\\.Rd" . poly-ess-help+r-mode))
+       )
    #+end_src
 
 * Other tools 
@@ -694,7 +690,7 @@ ESS (R, Julia)
    #+end_src
 
 ** PDF tools
-#+begin_src emacs-lisp :tangle no
+   #+begin_src emacs-lisp :tangle no
   (use-package pdf-tools
    :pin manual ;; manually update
    :config
@@ -714,13 +710,14 @@ ESS (R, Julia)
    (define-key pdf-view-mode-map (kbd "h") 'pdf-annot-add-highlight-markup-annotation)
    (define-key pdf-view-mode-map (kbd "t") 'pdf-annot-add-text-annotation)
    (define-key pdf-view-mode-map (kbd "D") 'pdf-annot-delete))
-#+end_src
+   #+end_src
 
 
-#+begin_src emacs-lisp :tangle yes
+   #+begin_src emacs-lisp :tangle yes
   (use-package openwith
     :ensure t
     :config
     (openwith-mode t)
     (setq openwith-associations '(("\\.pdf\\'" "evince" (file)))))
-#+end_src
+   #+end_src
+
