@@ -4,32 +4,25 @@
 
 * Personal info and package source
 ** Personal information
-
    #+begin_src emacs-lisp :tangle yes
 (setq user-full-name "Ahmadou H. Dicko"
       user-mail-address "mail at ahmadoudicko dot com")
    #+end_src
-
 ** Customized stuff
    #+begin_src emacs-lisp :tangle yes
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (load custom-file)
    #+end_src
-
 ** Add custom lisp path
    #+BEGIN_SRC emacs-lisp :tangle yes
      (add-to-list 'load-path "~/.emacs.d/lisp")
-     ;; (add-to-list 'load-path "~/.emacs.d/lisp/polymode")
-     ;; (add-to-list 'load-path "~/.emacs.d/lisp/polymode/modes")
    #+end_src
-
 ** Some useful shortcut
    #+begin_src emacs-lisp :tangle yes
 (defun emacs-d (filename)
   "Expand FILENAME relative to `user-emacs-directory'."
   (expand-file-name filename user-emacs-directory))
    #+end_src
-
 ** Add package sources
    #+begin_src emacs-lisp :tangle yes
      (require 'package)
@@ -40,7 +33,6 @@
      (add-to-list 'package-archives
                   '("elpy" . "http://jorgenschaefer.github.io/packages/"))
    #+end_src
-
 ** Use package
    #+begin_src emacs-lisp :tangle yes
      ;; Bootstrap `use-package'
@@ -49,7 +41,6 @@
        (package-install 'use-package))
      (require 'use-package)
    #+end_src
-
 ** Clean .emacs.d
    #+begin_src emacs-lisp :tangle no
   (use-package no-littering               ; Keep .emacs.d clean
@@ -59,7 +50,6 @@
     (add-to-list 'recentf-exclude no-littering-var-directory)
     (add-to-list 'recentf-exclude no-littering-etc-directory))   
    #+end_src
-
 * Theme and visual aspect
 ** Remove all clutter
    #+BEGIN_SRC emacs-lisp :tangle yes
@@ -71,7 +61,6 @@
 (setq inhibit-splash-screen t)
 (setq ad-redefinition-action 'accept)
    #+END_SRC
-
 ** Moe theme
    #+begin_src emacs-lisp :tangle yes
      (use-package moe-theme
@@ -88,7 +77,6 @@
   (global-linum-mode t)
   (setq-default truncate-lines t))
     #+end_src
-
 *** Hlinum
     #+begin_src emacs-lisp :tangle yes
 (use-package hlinum
@@ -96,7 +84,6 @@
   :config
   (hlinum-activate))
     #+end_src
-
 *** Smart mode line
     #+begin_src emacs-lisp :tangle yes
 (use-package smart-mode-line
@@ -106,18 +93,16 @@
   (setq sml/theme 'powerline)
   (sml/setup))
     #+end_src
-
 *** Prettify everythings
     #+begin_src emacs-lisp :tangle yes
 (global-prettify-symbols-mode 1)
     #+end_src
-
 *** Powerline
     #+begin_src emacs-lisp :tangle yes
-(use-package powerline
-  :ensure t
-  :config
-  (powerline-moe-theme))
+      (use-package powerline
+	:ensure t
+	:config
+	(powerline-moe-theme))
     #+end_src
 ** Smartparens
    #+begin_src emacs-lisp :tangle yes
@@ -131,7 +116,6 @@
   (add-hook 'ess-mode-hook 'turn-on-smartparens-mode)
   (add-hook 'org-mode-hook 'turn-on-smartparens-mode))
    #+end_src
-
 ** Icons
 *** Mode-icons
     #+begin_src emacs-lisp :tangle yes
@@ -140,7 +124,6 @@
       (progn
         (mode-icons-mode)))
     #+end_src
-
 *** All-the-icons
     #+begin_src emacs-lisp :tangle yes
       (use-package all-the-icons
@@ -160,7 +143,6 @@
 	:config
 	(all-the-icons-ivy-setup))
     #+end_src
-
 ** Treemacs
    #+begin_src emacs-lisp :tangle yes
      (use-package treemacs
@@ -213,7 +195,6 @@
        :config
        (setq treemacs-header-function #'treemacs-projectile-create-header))
    #+end_src
-
 ** Autocomplete
    #+begin_src emacs-lisp :tangle yes
   (use-package auto-complete
@@ -236,7 +217,6 @@
     :ensure t
     :init (ido-vertical-mode 1)))
    #+end_src
-
 ** Ivy, Swiper and Counsel
    #+begin_src emacs-lisp :tangle yes
 (use-package ivy
@@ -262,7 +242,6 @@
   (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
   (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history))
    #+end_src
-
 ** Eshell
    #+begin_src emacs-lisp :tangle yes
   (use-package xterm-color
@@ -276,12 +255,10 @@
     (add-to-list 'eshell-preoutput-filter-functions 'xterm-color-filter)
     (setq eshell-output-filter-functions (remove 'eshell-handle-ansi-color eshell-output-filter-functions)))
    #+end_src
-
 ** Browser
    #+begin_src emacs-lisp :tangle yes
 (setq browse-url-browser-function 'browse-url-chromium)
    #+end_src
-
 * Data science tools
 ** Clojure
 *** Clojure mode
@@ -294,7 +271,6 @@
   (add-to-list 'auto-mode-alist '("\\.cljx\\'" . clojure-mode))
   (add-to-list 'auto-mode-alist '("\\.cljs$" . clojure-mode)))
     #+end_src
-
 *** CIDER
     #+begin_src emacs-lisp :tangle no
 (use-package cider
@@ -317,7 +293,6 @@
              ("M-r" . cider-refresh)
              ("M-R" . cider-use-repl-tools)))
     #+end_src
-
 ** Scala
 *** Ensime
     #+begin_src emacs-lisp :tangle no
@@ -325,24 +300,15 @@
   :commands ensime ensime-mode)
 (add-hook 'scala-mode-hook 'ensime-mode)
     #+end_src
-
 ** ESS
-   ESS (R, Julia)
+*** R and Julia
    #+begin_src emacs-lisp :tangle yes
-     (defun my-ess-ac-hook ()
-       (ivy-mode -1)
-       (ido-mode 1)
-       (setq ido-enable-flex-matching t)
-       (ido-vertical-mode 1)
-       (auto-complete-mode 1))
-
      (defun R_pipe ()
        "R - %>% operator"
        (interactive)
        (just-one-space 1)
        (insert "%>%")
        (ess-newline-and-indent))
-
 
      (use-package ess
        :ensure t
@@ -357,7 +323,6 @@
 	  inferior-ess-same-window nil       
 	  ess-ask-for-ess-directory nil      ; don't ask wkd
 	  inferior-R-args "--no-restore-history --no-restore --quiet --no-save" ; no save
-	  ess-use-ido t
 	  ess-nuke-trailing-whitespace t
 	  ess-roxy-fontify-examples t
 	  ess-default-style 'RStudio)
@@ -369,17 +334,13 @@
 	 (define-key inferior-ess-mode-map (kbd "M-%") 'R_pipe)
 	 (define-key ess-r-mode-map "_" #'ess-insert-assign)
 	 (define-key inferior-ess-r-mode-map "_" #'ess-insert-assign)
-	 (add-hook 'ess-mode-hook 'flycheck-mode)
-	 (add-hook 'ess-mode-hook 'my-ess-ac-hook)
-	 (add-hook 'iESS-mode-hook 'my-ess-ac-hook)
-	 ;; (add-hook 'ess-help-mode-hook '(lambda ()
-	 ;; 				     (when (string= ess-dialect "R")
-	 ;; 				       (poly-ess-help+R-mode))))
+	 (add-hook 'ess-help-mode-hook '(lambda ()
+					  (when (string= ess-dialect "R")
+					    (poly-ess-help+R-mode))))
 	 (add-hook 'ess-R-post-run-hook 'smartparens-mode)
 	 (add-hook 'iESS-mode-hook 'ansi-color-for-comint-mode-on)
 	 (add-to-list 'comint-output-filter-functions 'ansi-color-process-output)))
    #+end_src
-
 ** Python
 *** Python mode customization
     #+begin_src emacs-lisp :tangle yes
@@ -387,7 +348,6 @@
             python-shell-interpreter-args "-i --simple-prompt --pprint")
       (add-hook 'python-mode-hook 'elpy-mode)
     #+end_src
-
 *** Elpy mode
     #+begin_src emacs-lisp :tangle yes
      (use-package elpy
@@ -401,7 +361,6 @@
        (define-key elpy-mode-map (kbd "C-c C-v") 'elpy-doc)
        (elpy-enable))
     #+end_src
-
 ** Javascript
 *** Js2
     #+begin_src emacs-lisp :tangle yes
@@ -434,16 +393,12 @@
   :after tern
   :if (executable-find "tern"))
     #+end_src
-
-    #+RESULTS:
-
 *** Prettier-js
     #+begin_src emacs-lisp :tangle yes
 (use-package prettier-js
   :if (executable-find "prettier")
   :hook ((js2-mode . prettier-js-mode)))
     #+end_src
-
 *** Indium
     #+begin_src emacs-lisp :tangle yes
 (use-package indium
@@ -452,13 +407,11 @@
               ("C-c C-l" . indium-eval-buffer))
   :hook ((js2-mode . indium-interaction-mode)))
     #+end_src
-
 *** JSON
     #+begin_src emacs-lisp :tangle yes
 (use-package json-mode
   :hook ((json-mode . prettier-js-mode)))
     #+end_src
-
 ** Cpp 
 *** Cpp font
     #+begin_src emacs-lisp :tangle yes
@@ -466,11 +419,13 @@
   :ensure t)
     #+end_src
 ** Stan
-
     #+begin_src emacs-lisp :tangle yes
 (use-package stan-mode :load-path "~/.emacs.d/lisp/stan-mode")
     #+end_src
-
+** PSPP
+    #+begin_src emacs-lisp :tangle yes
+(use-package pspp-mode :load-path "~/.emacs.d/lisp")
+    #+end_src
 * Literal programming tools
 ** Org-mode
    #+begin_src emacs-lisp :tangle yes
@@ -559,7 +514,6 @@
 	   (require 'auctex-latexmk)         ; Load LaTeXmk
 	   (auctex-latexmk-setup))))         ; Enable --pvc mode for continuous compilation
    #+end_src
-
 ** Markdown
    #+begin_src emacs-lisp :tangle yes
 (use-package markdown-mode
@@ -567,7 +521,6 @@
   :mode (("\\.markdown\\'" . markdown-mode)
          ("\\.md\\'"       . markdown-mode)))
    #+end_src
-
 ** Polymode
    #+begin_src emacs-lisp :tangle yes
      (use-package polymode           ; ESS with polymode
@@ -578,15 +531,12 @@
        (require 'poly-noweb)
        (require 'poly-org)
        :config
-       (add-to-list 'auto-mode-alist '("\\.md" . poly-markdown-mode)) ; Markdown files
-       (add-to-list 'auto-mode-alist '("\\.Rmd" . poly-markdown+r-mode))
-       (add-to-list 'auto-mode-alist '("\\.Rmarkdown" . poly-markdown+r-mode))
-       (add-to-list 'auto-mode-alist '("\\.Rpres" . poly-markdown+r-mode))
-       (add-to-list 'auto-mode-alist '("\\.Rnw" . poly-noweb+r-mode)) ; Sweave files
-       (add-to-list 'auto-mode-alist '("\\.Rd" . poly-ess-help+r-mode))
-       )
+       (add-to-list 'auto-mode-alist '("\\.Rmd" . poly-markdown+R-mode))
+       (add-to-list 'auto-mode-alist '("\\.Rmarkdown" . poly-markdown+R-mode))
+       (add-to-list 'auto-mode-alist '("\\.Rpres" . poly-markdown+R-mode))
+       (add-to-list 'auto-mode-alist '("\\.Rnw" . poly-noweb+R-mode)) ; Sweave files
+       (add-to-list 'auto-mode-alist '("\\.Rd" . poly-ess-help+R-mode)))
    #+end_src
-
 * Other tools 
 ** Magit
    #+begin_src emacs-lisp :tangle yes
@@ -596,22 +546,15 @@
   :config
   (define-key magit-status-mode-map (kbd "q") 'magit-quit-session))
    #+end_src
-
 ** Projectile
    #+BEGIN_SRC emacs-lisp :tangle yes
      (use-package projectile
        :ensure t
        :config
        (projectile-global-mode))
-
-     ;; (use-package counsel-projectile
-     ;;   :ensure t
-     ;;   :config
-     ;;   (counsel-projectile-mode))
    #+end_src
-
 ** Mu4e
-   #+begin_src emacs-lisp :tangle yes
+   #+begin_src emacs-lisp :tangle no
      (use-package mu4e
        :init
        (progn
@@ -672,7 +615,6 @@
 	 (setq gnus-dired-mail-mode 'mu4e-user-agent)
 	 (add-hook 'dired-mode-hook 'turn-on-gnus-dired-mode)))
    #+end_src
-
 ** Eww
    #+begin_src emacs-lisp :tangle no
   (use-package eww-lnum
@@ -688,7 +630,6 @@
    #+begin_src emacs-lisp :tangle yes
 (setq tramp-default-method "ssh")
    #+end_src
-
 ** PDF tools
    #+begin_src emacs-lisp :tangle no
   (use-package pdf-tools
@@ -711,7 +652,6 @@
    (define-key pdf-view-mode-map (kbd "t") 'pdf-annot-add-text-annotation)
    (define-key pdf-view-mode-map (kbd "D") 'pdf-annot-delete))
    #+end_src
-
 
    #+begin_src emacs-lisp :tangle yes
   (use-package openwith
