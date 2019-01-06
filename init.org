@@ -518,6 +518,8 @@
    #+begin_src emacs-lisp :tangle yes
 (use-package markdown-mode
   :ensure t
+  :config
+  (setq markdown-enable-math t)
   :mode (("\\.markdown\\'" . markdown-mode)
          ("\\.md\\'"       . markdown-mode)))
    #+end_src
