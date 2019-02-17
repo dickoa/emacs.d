@@ -1,0 +1,6 @@
+[submodule "lisp/pdf-tools"]
+	path = lisp/pdf-tools
+	url = https://github.com/politza/pdf-tools
+[submodule "all-the-icons-dired"]
+	path = lisp/all-the-icons-dired
+	url = git@github.com:jtbm37/all-the-icons-dired.git

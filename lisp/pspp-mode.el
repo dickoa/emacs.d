@@ -1,0 +1,1 @@
+/usr/share/pspp/contrib/pspp-mode.el
