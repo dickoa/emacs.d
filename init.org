@@ -196,7 +196,7 @@
        (setq treemacs-header-function #'treemacs-projectile-create-header))
    #+end_src
 ** Autocomplete
-   #+begin_src emacs-lisp :tangle yes
+   #+begin_src emacs-lisp :tangle no
   (use-package auto-complete
     :ensure t
     :config
@@ -206,6 +206,16 @@
       (define-key ac-completing-map (kbd "M-h") 'ac-quick-help)
       (global-auto-complete-mode t)))  
    #+end_src
+** Company
+   #+begin_src emacs-lisp :tangle yes
+  (use-package company
+    :ensure t
+    :config
+    (setq company-idle-delay 0)
+    (setq company-minimum-prefix-length 3)
+    (global-company-mode t))
+   #+end_src
+
 ** Ido
    #+begin_src emacs-lisp :tangle no
 (use-package ido
@@ -302,45 +312,50 @@
     #+end_src
 ** ESS
 *** R and Julia
-   #+begin_src emacs-lisp :tangle yes
-     (defun R_pipe ()
-       "R - %>% operator"
-       (interactive)
-       (just-one-space 1)
-       (insert "%>%")
-       (ess-newline-and-indent))
+    #+begin_src emacs-lisp :tangle yes
+      (defun R_pipe ()
+	"R - %>% operator"
+	(interactive)
+	(just-one-space 1)
+	(insert "%>%")
+	(ess-newline-and-indent))
 
-     (use-package ess
-       :ensure t
-       :defer t
-       :init
-       (require 'ess-site)
-       (require 'ess-view)
-       (require 'poly-R)
-       :config
-       (progn
-	 (setq
-	  inferior-ess-same-window nil       
-	  ess-ask-for-ess-directory nil      ; don't ask wkd
-	  inferior-R-args "--no-restore-history --no-restore --quiet --no-save" ; no save
-	  ess-nuke-trailing-whitespace t
-	  ess-roxy-fontify-examples t
-	  ess-default-style 'RStudio)
-	 (setq prettify-symbols-alist '(("lambda" . 955)))
-	 (add-hook 'ess-mode-hook
-		   (lambda ()
-		     (setq mode-require-final-newline nil)))
-	 (define-key ess-mode-map (kbd "M-%") 'R_pipe)
-	 (define-key inferior-ess-mode-map (kbd "M-%") 'R_pipe)
-	 (define-key ess-r-mode-map "_" #'ess-insert-assign)
-	 (define-key inferior-ess-r-mode-map "_" #'ess-insert-assign)
-	 (add-hook 'ess-help-mode-hook '(lambda ()
-					  (when (string= ess-dialect "R")
-					    (poly-ess-help+R-mode))))
-	 (add-hook 'ess-R-post-run-hook 'smartparens-mode)
-	 (add-hook 'iESS-mode-hook 'ansi-color-for-comint-mode-on)
-	 (add-to-list 'comint-output-filter-functions 'ansi-color-process-output)))
-   #+end_src
+      (use-package ess-R-data-view :load-path "~/.emacs.d/lisp")
+
+      (use-package ess
+	:ensure t
+	:defer t
+	:init
+	(require 'ess-site)
+	(require 'ess-view)
+	(require 'ess-R-data-view)
+	(require 'poly-R)
+	:config
+	(progn
+	  (setq
+	   inferior-ess-same-window nil       
+	   ess-ask-for-ess-directory nil      ; don't ask wkd
+	   inferior-R-args "--no-restore-history --no-restore --quiet --no-save" ; no save
+	   ess-nuke-trailing-whitespace t
+	   ess-roxy-fontify-examples t
+	   ess-use-ido nil
+	   ess-use-auto-complete nil
+	   ess-default-style 'RStudio)
+	  (setq prettify-symbols-alist '(("lambda" . 955)))
+	  (add-hook 'ess-mode-hook
+		    (lambda ()
+		      (setq mode-require-final-newline nil)))
+	  (define-key ess-mode-map (kbd "M-%") 'R_pipe)
+	  (define-key inferior-ess-mode-map (kbd "M-%") 'R_pipe)
+	  (define-key ess-r-mode-map "_" #'ess-insert-assign)
+	  (define-key inferior-ess-r-mode-map "_" #'ess-insert-assign)
+	  (add-hook 'ess-help-mode-hook '(lambda ()
+					   (when (string= ess-dialect "R")
+					     (poly-ess-help+R-mode))))
+	  (add-hook 'ess-R-post-run-hook 'smartparens-mode)
+	  (add-hook 'iESS-mode-hook 'ansi-color-for-comint-mode-on)
+	  (add-to-list 'comint-output-filter-functions 'ansi-color-process-output)))
+    #+end_src
 ** Python
 *** Python mode customization
     #+begin_src emacs-lisp :tangle yes
@@ -419,13 +434,13 @@
   :ensure t)
     #+end_src
 ** Stan
-    #+begin_src emacs-lisp :tangle yes
+   #+begin_src emacs-lisp :tangle yes
 (use-package stan-mode :load-path "~/.emacs.d/lisp/stan-mode")
-    #+end_src
+   #+end_src
 ** PSPP
-    #+begin_src emacs-lisp :tangle yes
+   #+begin_src emacs-lisp :tangle no
 (use-package pspp-mode :load-path "~/.emacs.d/lisp")
-    #+end_src
+   #+end_src
 * Literal programming tools
 ** Org-mode
    #+begin_src emacs-lisp :tangle yes
@@ -498,14 +513,14 @@
 	  TeX-PDF-mode t                     ; Compile as PDF
 	  TeX-show-compilation t             ; Show compilation buffer
 	  TeX-source-correlate-mode t)    
-	  (add-hook 'LaTeX-mode-hook 
-		    (lambda ()
-		      (LaTeX-math-mode)       ; math mode
-		      (flyspell-mode)         ; Flyspell checking
-		      (setq 
-		       TeX-clean-confirm nil ; Clean up intermediary files without confirm
-		       TeX-command-default "LatexMk"))))
-       (use-package auto-complete-auctex     ; AUCTeX completions using auto-complete.el
+	 (add-hook 'LaTeX-mode-hook 
+		   (lambda ()
+		     (LaTeX-math-mode)       ; math mode
+		     (flyspell-mode)         ; Flyspell checking
+		     (setq 
+		      TeX-clean-confirm nil ; Clean up intermediary files without confirm
+		      TeX-command-default "LatexMk"))))
+       (use-package company-auctex     ; AUCTeX completions using company
 	 :ensure t)                          ; Check and install if necessary
        (use-package auctex-latexmk           ; Integration of LaTeXmk                       
 	 :ensure t                           ; Check and install if necessary
