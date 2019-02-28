@@ -340,13 +340,14 @@
 	   ess-roxy-fontify-examples t
 	   ess-use-ido nil
 	   ess-use-auto-complete nil
+	   ess-use-company t
 	   ess-default-style 'RStudio)
 	  (setq prettify-symbols-alist '(("lambda" . 955)))
 	  (add-hook 'ess-mode-hook
 		    (lambda ()
 		      (setq mode-require-final-newline nil)))
-	  (define-key ess-mode-map (kbd "M-%") 'R_pipe)
-	  (define-key inferior-ess-mode-map (kbd "M-%") 'R_pipe)
+	  (define-key ess-mode-map (kbd "C-S-m") 'R_pipe)
+	  (define-key inferior-ess-mode-map (kbd "C-S-m") 'R_pipe)
 	  (define-key ess-r-mode-map "_" #'ess-insert-assign)
 	  (define-key inferior-ess-r-mode-map "_" #'ess-insert-assign)
 	  (add-hook 'ess-help-mode-hook '(lambda ()
