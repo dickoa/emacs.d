@@ -322,6 +322,11 @@
 
       (use-package ess-R-data-view :load-path "~/.emacs.d/lisp")
 
+      (defun my-inf-ess-hook ()
+	"My local settings for inferior ESS mode."
+	(set (make-local-variable 'comint-password-prompt-regexp)
+	     "\\(^ *\\|🔑haha|\\( SMB\\|'s\\|Bad\\|CVS\\|Enter\\(?: \\(?:\\(?:sam\\|th\\)e\\)\\)?\\|Kerberos\\|LDAP\\|New\\|Old\\|PEM\\|Re\\(?:peat\\|type\\)\\|SUDO\\|UNIX\\|\\[sudo]\\|enter\\(?: \\(?:\\(?:sam\\|th\\)e\\)\\)?\\|login\\|new\\|old\\) +.*\\)\\(?:\\(?:adgangskode\\|contrase\\(?:\\(?:ny\\|ñ\\)a\\)\\|geslo\\|h\\(?:\\(?:asł\\|esl\\)o\\)\\|iphasiwedi\\|jelszó\\|l\\(?:ozinka\\|ösenord\\)\\|m\\(?:ot de passe\\|ật khẩu\\)\\|pa\\(?:rola\\|s\\(?:ahitza\\|s\\(?: phrase\\|code\\|ord\\|phrase\\|wor[dt]\\)\\|vorto\\)\\)\\|s\\(?:alasana\\|enha\\|laptažodis\\)\\|wachtwoord\\|лозинка\\|пароль\\|ססמה\\|كلمة السر\\|गुप्तशब्द\\|शब्दकूट\\|গুপ্তশব্দ\\|পাসওয়ার্ড\\|ਪਾਸਵਰਡ\\|પાસવર્ડ\\|ପ୍ରବେଶ ସଙ୍କେତ\\|கடவுச்சொல்\\|సంకేతపదము\\|ಗುಪ್ತಪದ\\|അടയാളവാക്ക്\\|රහස්පදය\\|ពាក្យសម្ងាត់\\|パスワード\\|密[码碼]\\|암호\\)\\|Response\\)\\(?:\\(?:, try\\)? *again\\| (empty for no passphrase)\\| (again)\\)?\\(?: [[:alpha:]]+ .+\\)?[[:blank:]]*[:：៖][[:blank:]]*\\'"))
+
       (use-package ess
 	:ensure t
 	:defer t
@@ -355,7 +360,8 @@
 					     (poly-ess-help+R-mode))))
 	  (add-hook 'ess-R-post-run-hook 'smartparens-mode)
 	  (add-hook 'iESS-mode-hook 'ansi-color-for-comint-mode-on)
-	  (add-to-list 'comint-output-filter-functions 'ansi-color-process-output)))
+	  ;; (add-hook 'inferior-ess-mode-hook 'my-inf-ess-hook)
+	  (add-hook 'comint-output-filter-functions 'comint-watch-for-password-prompt)))
     #+end_src
 ** Python
 *** Python mode customization
@@ -678,4 +684,3 @@
     (openwith-mode t)
     (setq openwith-associations '(("\\.pdf\\'" "evince" (file)))))
    #+end_src
-
